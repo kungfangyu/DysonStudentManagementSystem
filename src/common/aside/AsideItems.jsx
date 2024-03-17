@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-16 21:54:33
+ * @LastEditTime: 2024-03-17 16:39:03
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
@@ -54,7 +54,7 @@ const menuItems = [
     menuId: 'users',
     primary: 'User',
     icon: <AccountCircleIcon />,
-    link: 'https://google.com',
+    link: '/user',
   },
 ];
 

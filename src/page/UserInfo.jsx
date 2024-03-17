@@ -1,18 +1,19 @@
 /*
  * @Author: Fangyu Kung
- * @Date: 2024-03-15 14:01:15
+ * @Date: 2024-03-16 19:06:31
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-17 17:51:06
- * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleList.jsx
+ * @LastEditTime: 2024-03-17 18:18:00
+ * @FilePath: /csc8019_team_project_frontend/src/page/UserInfo.jsx
  */
 import * as React from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import MenuIcon from '@mui/icons-material/Menu';
+import SendIcon from '@mui/icons-material/Send';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -20,14 +21,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
-import Copyright from '../../../common/Copyright';
-import Aside from '../../../common/aside/Aside';
-import AsideItems from '../../../common/aside/AsideItems';
-import Nav from '../../../common/aside/Nav';
-import ModuleCard from '../../../components/ModuleCard';
-import theme from '../../../style/theme';
+import Copyright from '../common/Copyright';
+import Aside from '../common/aside/Aside';
+import AsideItems from '../common/aside/AsideItems';
+import Nav from '../common/aside/Nav';
+import UserInfoForm from '../components/UserInfoForm';
+import theme from '../style/theme';
 
-const ModuleList = () => {
+const UserInfo = () => {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -62,7 +63,7 @@ const ModuleList = () => {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Modules
+              User Information
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -95,14 +96,12 @@ const ModuleList = () => {
           }}
         >
           <Toolbar />
-          <Container
-            sx={{
-              mt: 4,
-              mb: 4,
-            }}
-          >
-            <ModuleCard />
-          </Container>
+          <UserInfoForm />
+          <Box sx={{ textAlign: 'center' }}>
+            <Button variant="contained" endIcon={<SendIcon />} size="large">
+              Send
+            </Button>
+          </Box>
 
           <Copyright sx={{ pt: 4 }} />
         </Box>
@@ -111,4 +110,4 @@ const ModuleList = () => {
   );
 };
 
-export default ModuleList;
+export default UserInfo;

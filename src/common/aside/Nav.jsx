@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 00:50:07
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-16 02:04:03
- * @FilePath: /csc8019_team_project_frontend/src/common/menu/Nav.jsx
+ * @LastEditTime: 2024-03-17 16:34:33
+ * @FilePath: /csc8019_team_project_frontend/src/common/aside/Nav.jsx
  */
 import MuiAppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
