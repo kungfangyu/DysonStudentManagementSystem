@@ -1,8 +1,9 @@
-/**
- * @author Fangyu Kung
- * @create date 2024-03-15 02:20:07
- * @modify date 2024-03-15 02:20:07
- * @desc Modify the website theme
+/*
+ * @Author: Fangyu Kung
+ * @Date: 2024-03-15 02:01:29
+ * @LastEditors: Do not edit
+ * @LastEditTime: 2024-03-17 15:54:00
+ * @FilePath: /csc8019_team_project_frontend/src/style/theme.js
  */
 
 import { createTheme } from '@mui/material/styles';

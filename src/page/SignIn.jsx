@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-15 14:06:36
- * @FilePath: /csc8019_team_project_frontend/src/SignIn.jsx
+ * @LastEditTime: 2024-03-16 00:48:16
+ * @FilePath: /csc8019_team_project_frontend/src/page/SignIn.jsx
  */
 
 import * as React from 'react';
@@ -20,25 +20,8 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
 // Customize
+import Copyright from '../common/Copyright';
 import theme from '../style/theme';
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="https://www.dysoninstitute.ac.uk/">
-        Dyson Institute
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 export default function SignIn() {
   const handleSubmit = (event) => {
