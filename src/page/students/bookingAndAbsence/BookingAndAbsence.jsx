@@ -1,11 +1,12 @@
 /*
  * @Author: Fangyu Kung
- * @Date: 2024-03-16 19:06:31
+ * @Date: 2024-03-18 16:34:54
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-18 13:13:38
- * @FilePath: /csc8019_team_project_frontend/src/page/students/timeTable/TimeTable.jsx
+ * @LastEditTime: 2024-03-18 22:58:03
+ * @FilePath: /csc8019_team_project_frontend/src/page/students/bookingAndAbsence/BookingAndAbsence.jsx
  */
 import * as React from 'react';
+import { useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -20,17 +21,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Tab from '@mui/material/Tab';
+
 import Copyright from '../../../common/Copyright';
-import StudentTimeTable from '../../../common/StudentTimeTable';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import BookingForm from '../../../components/BookingForm';
 import theme from '../../../style/theme';
 
-const TimeTable = () => {
-  const [open, setOpen] = React.useState(true);
+const BookingAndAbsence = () => {
+  const [value, setValue] = useState('1');
+
+  const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
   };
   return (
     <ThemeProvider theme={theme}>
@@ -61,7 +73,7 @@ const TimeTable = () => {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Timetable
+              Booking & Absence
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -100,9 +112,24 @@ const TimeTable = () => {
               mb: 4,
             }}
           >
-            <StudentTimeTable />
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList
+                    onChange={handleTabChange}
+                    aria-label="lab API tabs example"
+                  >
+                    <Tab label="Booking" value="1" />
+                    <Tab label="Absence" value="2" />
+                  </TabList>
+                </Box>
+                <TabPanel value="1">
+                  <BookingForm />
+                </TabPanel>
+                <TabPanel value="2">Absence</TabPanel>
+              </TabContext>
+            </Box>
           </Container>
-
           <Copyright sx={{ pt: 4 }} />
         </Box>
       </Box>
@@ -110,4 +137,4 @@ const TimeTable = () => {
   );
 };
 
-export default TimeTable;
+export default BookingAndAbsence;

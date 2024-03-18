@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-17 16:39:03
+ * @LastEditTime: 2024-03-18 16:40:55
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
@@ -33,10 +33,10 @@ const menuItems = [
     link: '/timetable',
   },
   {
-    menuId: 'bookingabsence',
+    menuId: 'bookingandabsence',
     primary: 'Booking & Absence',
     icon: <PeopleIcon />,
-    link: '/bookingabsence',
+    link: '/bookingandabsence',
   },
   {
     menuId: 'courseinfooperations',
