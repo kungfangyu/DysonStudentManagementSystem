@@ -1,3 +1,11 @@
+<!--
+ * @Author: Fangyu Kung
+ * @Date: 2024-03-14 20:59:36
+ * @LastEditors: Do not edit
+ * @LastEditTime: 2024-03-18 22:55:14
+ * @FilePath: /csc8019_team_project_frontend/README.md
+-->
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +76,33 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Folder role
+
+### Page
+
+All the pages will be put in this folder and every file name should be UpperCamelCase.
+
+### Style
+
+This folder is all the customized style. file name should be lowerCamelCase.
+
+### Common
+
+This folder will be put common layout such as Aside, and very file name should be UpperCamelCase.
+
+### Api
+
+This folder will be put Api data and function. File name should follow every pages name and also should be UpperCamelCase.
+
+### Components
+
+This folder has components in this folder such as Form, ModuleCard...., and every file name should be UpperCamelCase.
+
+### Data
+
+This folder will be put static data and file name should be lowerCamelCase.
+
+### Helpers
+
+This folder will be put common functions and file name should be lowerCamelCase.
