@@ -2,35 +2,48 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-16 00:48:16
+ * @LastEditTime: 2024-03-20 23:17:23
  * @FilePath: /csc8019_team_project_frontend/src/page/SignIn.jsx
  */
 
 import * as React from 'react';
+import { useState } from 'react';
 
 // Mui components
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
+import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
-
 // Customize
 import Copyright from '../common/Copyright';
+import SignInForm from '../components/SignInForm';
 import theme from '../style/theme';
 
 export default function SignIn() {
+  const [role, setRole] = useState('1');
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleChange = (event, newValue) => {
+    setRole(newValue.toString());
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     console.log({
-      userId: data.get('userId'),
-      password: data.get('password'),
+      userId: userId,
+      password: password,
+      role: role,
     });
+    // clear input
+    setUserId('');
+    setPassword('');
   };
 
   return (
@@ -57,7 +70,7 @@ export default function SignIn() {
         >
           <Typography
             component="h1"
-            variant="h2"
+            variant="h3"
             sx={{
               fontWeight: 'bold',
               color: '#FFF',
@@ -65,7 +78,6 @@ export default function SignIn() {
               alignItems: 'center',
               justifyContent: 'center',
               height: '65%',
-              margin: 0,
             }}
           >
             Dyson Student Management System
@@ -74,7 +86,7 @@ export default function SignIn() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
-              my: 8,
+              my: 4,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
@@ -82,52 +94,50 @@ export default function SignIn() {
             }}
           >
             <img width={200} src="./images/Dyson_Logo.png" alt="Logo" />
-            <Typography component="h2" variant="h4">
+            <Typography component="h2" variant="h5">
               Sign in
             </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="userId"
-                label="User ID"
-                name="userId"
-                autoComplete="userId"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-              </Grid>
-              <Copyright sx={{ mt: 5 }} />
-            </Box>
+          </Box>
+          <Box
+            sx={{
+              my: 4,
+              mx: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <TabContext value={role}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <TabList
+                  onChange={handleChange}
+                  aria-label="lab API tabs example"
+                >
+                  <Tab label="Student" value="1" />
+                  <Tab label="Staff" value="0" />
+                </TabList>
+              </Box>
+              <TabPanel value="1">
+                <SignInForm
+                  handleSubmit={handleSubmit}
+                  setPassword={setPassword}
+                  setUserId={setUserId}
+                  userId={userId}
+                  password={password}
+                />
+              </TabPanel>
+              <TabPanel value="0">
+                <SignInForm
+                  handleSubmit={handleSubmit}
+                  setPassword={setPassword}
+                  setUserId={setUserId}
+                  userId={userId}
+                  password={password}
+                />
+              </TabPanel>
+            </TabContext>
+
+            <Copyright sx={{ mt: 5 }} />
           </Box>
         </Grid>
       </Grid>

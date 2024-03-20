@@ -25,8 +25,6 @@ const BookingForm = () => {
         sx={{
           mt: 4,
           mb: 4,
-          display: 'flex',
-          justifyContent: 'center',
         }}
         space={2}
       >

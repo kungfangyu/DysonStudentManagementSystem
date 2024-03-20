@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-18 16:40:55
+ * @LastEditTime: 2024-03-19 17:20:45
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
@@ -45,10 +45,10 @@ const menuItems = [
     link: '',
   },
   {
-    menuId: 'heips',
-    primary: 'Helps',
+    menuId: 'academichistory',
+    primary: 'Academic History',
     icon: <InfoIcon />,
-    link: 'https://google.com',
+    link: '/academichistory',
   },
   {
     menuId: 'users',
