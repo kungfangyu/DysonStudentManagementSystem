@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-20 22:39:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-20 23:14:04
+ * @LastEditTime: 2024-03-21 12:55:47
  * @FilePath: /csc8019_team_project_frontend/src/components/SignInForm.jsx
  */
 import * as React from 'react';
@@ -15,11 +15,11 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 
 const SignInForm = ({
-  handleSubmit,
-  setPassword,
-  setUserId,
-  password,
   userId,
+  password,
+  setUserId,
+  setPassword,
+  handleSubmit,
 }) => {
   return (
     <Box component="form" noValidate sx={{ mt: 1 }}>
@@ -58,7 +58,7 @@ const SignInForm = ({
       </Button>
       <Grid container>
         <Grid item xs>
-          <Link href="#" variant="body2">
+          <Link href="/forget" variant="">
             Forgot password?
           </Link>
         </Grid>

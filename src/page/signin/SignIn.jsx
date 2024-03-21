@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-20 23:17:23
- * @FilePath: /csc8019_team_project_frontend/src/page/SignIn.jsx
+ * @LastEditTime: 2024-03-21 12:34:22
+ * @FilePath: /csc8019_team_project_frontend/src/page/signin/SignIn.jsx
  */
 
 import * as React from 'react';
@@ -21,9 +21,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 // Customize
-import Copyright from '../common/Copyright';
-import SignInForm from '../components/SignInForm';
-import theme from '../style/theme';
+import Copyright from '../../common/Copyright';
+import SignInForm from '../../components/SignInForm';
+import theme from '../../style/theme';
 
 export default function SignIn() {
   const [role, setRole] = useState('1');
@@ -60,10 +60,6 @@ export default function SignIn() {
             backgroundImage:
               'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/images/signin_background.png)',
             backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light'
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
