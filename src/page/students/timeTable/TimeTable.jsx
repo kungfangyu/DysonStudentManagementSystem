@@ -2,22 +2,18 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 19:06:31
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-18 13:13:38
+ * @LastEditTime: 2024-04-05 09:51:11
  * @FilePath: /csc8019_team_project_frontend/src/page/students/timeTable/TimeTable.jsx
  */
 import * as React from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import MenuIcon from '@mui/icons-material/Menu';
-import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
 import Copyright from '../../../common/Copyright';
@@ -36,40 +32,7 @@ const TimeTable = () => {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              Timetable
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <ExitToAppIcon />
-              </Badge>
-            </IconButton>
-          </Toolbar>
-        </Nav>
+        <Nav open={open} toggleDrawer={toggleDrawer} title={'TimeTable'} />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
