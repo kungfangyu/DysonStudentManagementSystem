@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-21 12:34:22
+ * @LastEditTime: 2024-04-09 07:54:23
  * @FilePath: /csc8019_team_project_frontend/src/page/signin/SignIn.jsx
  */
 
@@ -10,14 +10,10 @@ import * as React from 'react';
 import { useState } from 'react';
 
 // Mui components
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 // Customize
@@ -26,20 +22,14 @@ import SignInForm from '../../components/SignInForm';
 import theme from '../../style/theme';
 
 export default function SignIn() {
-  const [role, setRole] = useState('1');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleChange = (event, newValue) => {
-    setRole(newValue.toString());
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log({
       userId: userId,
       password: password,
-      role: role,
     });
     // clear input
     setUserId('');
@@ -103,7 +93,7 @@ export default function SignIn() {
               alignItems: 'center',
             }}
           >
-            <TabContext value={role}>
+            {/* <TabContext value={role}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList
                   onChange={handleChange}
@@ -113,15 +103,15 @@ export default function SignIn() {
                   <Tab label="Staff" value="0" />
                 </TabList>
               </Box>
-              <TabPanel value="1">
-                <SignInForm
-                  handleSubmit={handleSubmit}
-                  setPassword={setPassword}
-                  setUserId={setUserId}
-                  userId={userId}
-                  password={password}
-                />
-              </TabPanel>
+              <TabPanel value="1"> */}
+            <SignInForm
+              handleSubmit={handleSubmit}
+              setPassword={setPassword}
+              setUserId={setUserId}
+              userId={userId}
+              password={password}
+            />
+            {/* </TabPanel>
               <TabPanel value="0">
                 <SignInForm
                   handleSubmit={handleSubmit}
@@ -131,7 +121,7 @@ export default function SignIn() {
                   password={password}
                 />
               </TabPanel>
-            </TabContext>
+            </TabContext> */}
 
             <Copyright sx={{ mt: 5 }} />
           </Box>

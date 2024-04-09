@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-21 12:55:30
+ * @LastEditTime: 2024-04-05 06:47:02
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -12,6 +12,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import ForgetPassword from './page/signin/ForgetPassword';
 import SignIn from './page/signin/SignIn';
 import BookingAndAbsence from './page/students/bookingAndAbsence/BookingAndAbsence';
+import ModuleDetails from './page/students/modules/ModuleDetails';
 import ModuleList from './page/students/modules/ModuleList';
 import TimeTable from './page/students/timeTable/TimeTable';
 import UserInfo from './page/UserInfo';
@@ -22,6 +23,8 @@ const App = () => (
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/modules" element={<ModuleList />} />
+        <Route path="/modules/:id" element={<ModuleDetails />} />
+
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/bookingandabsence" element={<BookingAndAbsence />} />
 
