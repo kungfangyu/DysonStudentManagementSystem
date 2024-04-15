@@ -10,13 +10,9 @@ import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
-
 import { styled } from '@mui/system';
 
-const FormGrid = styled(Grid)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-}));
+import FormGrid from '../style/formStyle';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
