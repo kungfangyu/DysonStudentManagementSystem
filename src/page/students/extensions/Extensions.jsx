@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-12 16:23:48
+ * @LastEditTime: 2024-04-15 16:57:29
  * @FilePath: /csc8019_team_project_frontend/src/page/students/extensions/Extensions.jsx
  */
 import dayjs from 'dayjs';
@@ -38,13 +38,15 @@ import Nav from '../../../common/aside/Nav';
 import FormGrid from '../../../style/formStyle';
 import theme from '../../../style/theme';
 
+import PopupExtensions from '../../../components/PopupExtensions';
+
 const Extensions = () => {
   const [open, setOpen] = useState(true);
   const [module, setModule] = useState([]);
   const [assignment, setAssignment] = useState([]);
   const [startDate, setStartDate] = useState(dayjs(Date.now()));
   const [endDate, setEndDate] = useState(dayjs(Date.now()));
-
+  const [popupOpen, setPopupOpen] = useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -55,6 +57,14 @@ const Extensions = () => {
 
   const handleAssignmentChange = (event) => {
     setAssignment(event.target.value);
+  };
+
+  const handlePopupExtensions = () => {
+    setPopupOpen(true);
+  };
+
+  const handlePopupExtensionsClose = () => {
+    setPopupOpen(false);
   };
 
   const moduleSelect = ['CSC8019', 'CSC8015', 'CSC8014', 'CSC8022'];
@@ -198,7 +208,12 @@ const Extensions = () => {
               </FormGrid>
             </Grid>
             <Box sx={{ textAlign: 'center', mt: 4 }}>
-              <Button variant="contained" endIcon={<SendIcon />} size="large">
+              <Button
+                variant="contained"
+                endIcon={<SendIcon />}
+                size="large"
+                onClick={handlePopupExtensions}
+              >
                 Send
               </Button>
             </Box>
@@ -207,6 +222,10 @@ const Extensions = () => {
           <Copyright sx={{ pt: 4 }} />
         </Box>
       </Box>
+      <PopupExtensions
+        open={popupOpen}
+        handlePopupExtensionsClose={handlePopupExtensionsClose}
+      />
     </ThemeProvider>
   );
 };
