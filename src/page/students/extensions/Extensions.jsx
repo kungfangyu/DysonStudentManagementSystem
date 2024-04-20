@@ -219,7 +219,7 @@ const Extensions = () => {
             </Box>
           </Container>
 
-          <Copyright sx={{ pt: 4 }} />
+          <Copyright sx={{ pt: 4, pb: 4 }} />
         </Box>
       </Box>
       <PopupExtensions

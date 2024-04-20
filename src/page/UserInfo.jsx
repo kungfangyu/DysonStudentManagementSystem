@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 19:06:31
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-05 09:51:54
+ * @LastEditTime: 2024-04-20 22:31:20
  * @FilePath: /csc8019_team_project_frontend/src/page/UserInfo.jsx
  */
 import * as React from 'react';
@@ -70,7 +70,7 @@ const UserInfo = () => {
             </Button>
           </Box>
 
-          <Copyright sx={{ pt: 4 }} />
+          <Copyright sx={{ pt: 4, pb: 4 }} />
         </Box>
       </Box>
     </ThemeProvider>
