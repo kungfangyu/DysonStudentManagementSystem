@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 21:37:20
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-05 09:05:04
+ * @LastEditTime: 2024-04-20 23:09:06
  * @FilePath: /csc8019_team_project_frontend/src/components/ModuleCard.jsx
  */
 import { CardActionArea } from '@mui/material';
@@ -29,7 +29,7 @@ const moduleItems = [
     image: './images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/ModuleDetails',
+    link: '/modules/moduleId',
   },
   {
     moduleId: '03',
@@ -37,7 +37,7 @@ const moduleItems = [
     image: './images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/bookingabsence',
+    link: '/modules/moduleId',
   },
   {
     moduleId: '04',
@@ -45,7 +45,7 @@ const moduleItems = [
     image: './images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '',
+    link: '/modules/moduleId',
   },
   {
     moduleId: '05',
@@ -53,7 +53,7 @@ const moduleItems = [
     image: './images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: 'https://google.com',
+    link: '/modules/moduleId',
   },
   {
     moduleId: '06',

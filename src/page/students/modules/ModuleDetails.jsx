@@ -2,11 +2,12 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-09 07:52:04
+ * @LastEditTime: 2024-04-20 23:06:09
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleDetails.jsx
  */
 import * as React from 'react';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { CardActionArea } from '@mui/material';
@@ -34,6 +35,8 @@ import Nav from '../../../common/aside/Nav';
 import theme from '../../../style/theme';
 
 const ModuleDetails = () => {
+  const { moduleId } = useParams();
+
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -54,17 +57,17 @@ const ModuleDetails = () => {
     relatedLink: [
       {
         title: 'Syllabus',
-        link: '/moduleId/syllabus',
+        link: `/${moduleId}/syllabus`,
         image: '/images/moduleMaterial.jpg',
       },
       {
         title: 'Materials',
-        link: '/moduleId/material',
+        link: `/${moduleId}/material`,
         image: '/images/moduleMaterial.jpg',
       },
       {
         title: 'Assignments and Exams',
-        link: '/moduleId/assignment',
+        link: `/${moduleId}/assignment`,
         image: '/images/moduleMaterial.jpg',
       },
     ],
