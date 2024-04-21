@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-20 22:47:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-21 15:30:20
+ * @LastEditTime: 2024-04-21 15:43:12
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleMaterial.jsx
  */
 import * as React from 'react';
@@ -97,7 +97,7 @@ const ModuleMaterial = () => {
             }}
           >
             {weeks.map((weekItem, index) => (
-              <Accordion key={index}>
+              <Accordion key={index} defaultExpanded={index === 0}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls={`panel${index + 1}-content`}
