@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 22:52:49
+ * @LastEditTime: 2024-04-22 22:59:54
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -14,6 +14,7 @@ import SignIn from './page/signin/SignIn';
 import BookingAndAbsence from './page/students/bookingAndAbsence/BookingAndAbsence';
 import Extensions from './page/students/extensions/Extensions';
 import Assignment from './page/students/modules/Assignment';
+import Exam from './page/students/modules/Exam';
 import ModuleAssignmentAndExam from './page/students/modules/ModuleAssignmentAndExam';
 import ModuleDetails from './page/students/modules/ModuleDetails';
 import ModuleList from './page/students/modules/ModuleList';
@@ -36,6 +37,10 @@ const App = () => (
         <Route
           path="/:moduleId/assignmentandexam/assignment/:id"
           element={<Assignment />}
+        />
+        <Route
+          path="/:moduleId/assignmentandexam/exam/:id"
+          element={<Exam />}
         />
 
         <Route path="/timetable" element={<TimeTable />} />

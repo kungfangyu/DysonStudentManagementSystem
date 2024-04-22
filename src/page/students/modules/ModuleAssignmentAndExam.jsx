@@ -50,12 +50,12 @@ const ModuleAssignmentAndExam = () => {
     {
       id: '1',
       exams: 'Exam 01',
-      link: `/examId`,
+      link: `exam/examId`,
     },
     {
       id: '2',
       exams: 'Exam 02',
-      link: `/examId`,
+      link: `exam/examId`,
     },
   ];
 
