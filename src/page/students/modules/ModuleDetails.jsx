@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-20 23:06:09
+ * @LastEditTime: 2024-04-22 22:52:25
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleDetails.jsx
  */
 import * as React from 'react';
@@ -67,7 +67,7 @@ const ModuleDetails = () => {
       },
       {
         title: 'Assignments and Exams',
-        link: `/${moduleId}/assignment`,
+        link: `/${moduleId}/assignmentandexam`,
         image: '/images/moduleMaterial.jpg',
       },
     ],
