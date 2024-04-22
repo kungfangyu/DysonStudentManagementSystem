@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 16:34:54
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-05 09:52:37
+ * @LastEditTime: 2024-04-22 10:40:24
  * @FilePath: /csc8019_team_project_frontend/src/page/students/bookingAndAbsence/BookingAndAbsence.jsx
  */
 import * as React from 'react';
@@ -26,6 +26,7 @@ import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import AbsenceForm from '../../../components/AbsenceForm';
 import BookingForm from '../../../components/BookingForm';
 import theme from '../../../style/theme';
 
@@ -93,7 +94,9 @@ const BookingAndAbsence = () => {
                 <TabPanel value="1">
                   <BookingForm />
                 </TabPanel>
-                <TabPanel value="2">Absence</TabPanel>
+                <TabPanel value="2">
+                  <AbsenceForm />
+                </TabPanel>
               </TabContext>
             </Box>
           </Container>
