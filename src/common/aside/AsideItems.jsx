@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-11 15:59:49
+ * @LastEditTime: 2024-04-23 13:25:45
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
@@ -46,10 +46,10 @@ const menuItems = [
     link: '/extensions',
   },
   {
-    menuId: 'courseinfooperations',
+    menuId: 'courseoperations',
     primary: 'CourseInfo & Operations',
     icon: <LayersIcon />,
-    link: '',
+    link: '/courseoperations',
   },
   {
     menuId: 'academichistory',
@@ -71,7 +71,7 @@ const MenuItems = () => {
       {menuItems.map((items) => {
         return (
           <MenuList key={items.menuId}>
-            <MenuItem href={items.link} target="_blank" component="a">
+            <MenuItem href={items.link} component="a">
               <ListItemIcon>{items.icon}</ListItemIcon>
               <ListItemText>{items.primary}</ListItemText>
             </MenuItem>
