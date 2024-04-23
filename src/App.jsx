@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 22:59:54
+ * @LastEditTime: 2024-04-23 17:54:14
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -12,6 +12,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import ForgetPassword from './page/signin/ForgetPassword';
 import SignIn from './page/signin/SignIn';
 import BookingAndAbsence from './page/students/bookingAndAbsence/BookingAndAbsence';
+import CourseInfoOperations from './page/students/courseOperations/CourseInfoOperations';
 import Extensions from './page/students/extensions/Extensions';
 import Assignment from './page/students/modules/Assignment';
 import Exam from './page/students/modules/Exam';
@@ -46,6 +47,7 @@ const App = () => (
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/bookingandabsence" element={<BookingAndAbsence />} />
         <Route path="/extensions" element={<Extensions />} />
+        <Route path="/courseoperations" element={<CourseInfoOperations />} />
 
         <Route path="/user" element={<UserInfo />} />
         <Route path="/forget" element={<ForgetPassword />} />
