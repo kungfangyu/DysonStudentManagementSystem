@@ -1,11 +1,5 @@
-/*
- * @Author: Fangyu Kung
- * @Date: 2024-03-16 19:06:31
- * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-05 09:51:11
- * @FilePath: /csc8019_team_project_frontend/src/page/students/timeTable/TimeTable.jsx
- */
 import * as React from 'react';
+import { useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Box from '@mui/material/Box';
@@ -15,24 +9,29 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-
 import Copyright from '../../../common/Copyright';
-import StudentTimeTable from '../../../common/StudentTimeTable';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import CourseOperationTable from '../../../components/CourseOperationTable';
 import theme from '../../../style/theme';
 
-const TimeTable = () => {
-  const [open, setOpen] = React.useState(true);
+const CourseInfoOperations = () => {
+  const [open, setOpen] = useState(true);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav open={open} toggleDrawer={toggleDrawer} title={'TimeTable'} />
+        <Nav
+          open={open}
+          toggleDrawer={toggleDrawer}
+          title={'Course Info and Operations'}
+        />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -63,7 +62,7 @@ const TimeTable = () => {
               mb: 4,
             }}
           >
-            <StudentTimeTable />
+            <CourseOperationTable />
           </Container>
 
           <Copyright sx={{ pt: 4, pb: 4 }} />
@@ -73,4 +72,4 @@ const TimeTable = () => {
   );
 };
 
-export default TimeTable;
+export default CourseInfoOperations;

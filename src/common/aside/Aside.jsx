@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 00:42:57
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-17 15:58:34
+ * @LastEditTime: 2024-04-23 19:28:53
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/Aside.jsx
  */
 import MuiDrawer from '@mui/material/Drawer';
@@ -28,9 +28,9 @@ const Aside = styled(MuiDrawer, {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      width: theme.spacing(7),
+      width: 52,
       [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9),
+        width: 52,
       },
     }),
   },

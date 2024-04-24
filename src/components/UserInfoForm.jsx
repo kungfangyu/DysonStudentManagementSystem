@@ -11,31 +11,19 @@ import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 
-import { styled } from '@mui/system';
-
-const FormGrid = styled(Grid)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-}));
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
+import FormGrid from '../style/formStyle';
 
 const titleSelect = ['Miss', 'Mrs', 'Mr', 'Dr.', 'Prof'];
+
 const UserInfoForm = () => {
   const [title, setTitle] = useState([]);
-
+  const [emergencyTitle, setEmergencyTitle] = useState([]);
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
+  };
+
+  const handleEmergencyTitleChange = (event) => {
+    setEmergencyTitle(event.target.value);
   };
 
   return (
@@ -59,13 +47,20 @@ const UserInfoForm = () => {
               sx={{ width: 100, height: 100, mb: 2 }}
             />
           </Grid>
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: 'none' }}
+            // onChange={(e) => handleFileUpload(e.target.files)}
+          />
+
           <Button
             role={undefined}
             variant="contained"
             tabIndex={-1}
+            onClick={() => document.getElementById('fileInput').click()}
             endIcon={<PhotoCamera />}
           >
-            <VisuallyHiddenInput type="file" />
             Update
           </Button>
         </FormGrid>
@@ -158,57 +153,19 @@ const UserInfoForm = () => {
               required
             />
           </FormGrid>
-          <FormGrid item xs={12}>
-            <FormLabel htmlFor="address1" required>
-              Address line 1
+
+          <FormGrid item xs={8}>
+            <FormLabel htmlFor="address" required>
+              Address
             </FormLabel>
             <OutlinedInput
-              id="address1"
-              name="address1"
-              type="address1"
-              placeholder="Street name and number"
-              autoComplete="shipping address-line1"
+              id="address"
+              name="address"
+              type="address"
               required
             />
           </FormGrid>
-          <FormGrid item xs={12}>
-            <FormLabel htmlFor="address2">Address line 2</FormLabel>
-            <OutlinedInput
-              id="address2"
-              name="address2"
-              type="address2"
-              placeholder="Apartment, suite, unit, etc. (optional)"
-              autoComplete="shipping address-line2"
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={6}>
-            <FormLabel htmlFor="city" required>
-              City
-            </FormLabel>
-            <OutlinedInput
-              id="city"
-              name="city"
-              type="city"
-              placeholder="New York"
-              autoComplete="City"
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={6}>
-            <FormLabel htmlFor="state" required>
-              State
-            </FormLabel>
-            <OutlinedInput
-              id="state"
-              name="state"
-              type="state"
-              placeholder="NY"
-              autoComplete="State"
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={6}>
+          <FormGrid item xs={4}>
             <FormLabel htmlFor="zip" required>
               Zip / Postal code
             </FormLabel>
@@ -221,23 +178,12 @@ const UserInfoForm = () => {
               required
             />
           </FormGrid>
-          <FormGrid item xs={6}>
-            <FormLabel htmlFor="country" required>
-              Country
-            </FormLabel>
-            <OutlinedInput
-              id="country"
-              name="country"
-              type="country"
-              placeholder="United States"
-              autoComplete="shipping country"
-              required
-            />
-          </FormGrid>
         </Grid>
       </Container>
+
+      {/*  Emergency Contact Start-------------------------------------*/}
       <Container>
-        <h2>Update Password</h2>
+        <h2>Emergency Contact</h2>
       </Container>
       <Container
         sx={{
@@ -247,29 +193,112 @@ const UserInfoForm = () => {
           justifyContent: 'end',
         }}
       >
-        <Grid container spacing={1}>
-          <FormGrid item xs={12} md={6}>
-            <FormLabel htmlFor="newPassword" required>
-              Change Password
+        <Grid container spacing={1} sx={{ justifyContent: 'end' }}>
+          <FormGrid item xs={12} md={4}>
+            <FormLabel htmlFor="e-first-name" required>
+              First name
             </FormLabel>
             <OutlinedInput
-              id="newPassword"
-              name="newPassword"
-              type="password"
+              id="e-first-name"
+              name="e-first-name"
+              type="name"
+              placeholder=""
+              required
             />
           </FormGrid>
-          <FormGrid item xs={12} md={6}>
-            <FormLabel htmlFor="confirmPassword" required>
-              Confirm Password
+          <FormGrid item xs={12} md={4}>
+            <FormLabel htmlFor="e-last-name">Last name</FormLabel>
+            <OutlinedInput
+              id="e-last-name"
+              name="e-last-name"
+              type="e-last-name"
+              placeholder=""
+              required
+            />
+          </FormGrid>
+          <FormGrid item xs={12} md={4}>
+            <FormLabel htmlFor="e-title">Title</FormLabel>
+            <Select
+              displayEmpty
+              value={emergencyTitle}
+              onChange={handleEmergencyTitleChange}
+              input={<OutlinedInput />}
+              renderValue={(selected) => {
+                if (selected.length === 0) {
+                  return <em>Title</em>;
+                }
+                return selected;
+              }}
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem disabled value="">
+                <em>Title</em>
+              </MenuItem>
+              {titleSelect.map((title) => (
+                <MenuItem key={title} value={title}>
+                  {title}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormGrid>
+          <FormGrid item xs={12} md={4}>
+            <FormLabel htmlFor="relation">Relation</FormLabel>
+            <OutlinedInput id="relation" name="relation" type="" required />
+          </FormGrid>
+          <FormGrid item xs={12} md={4}>
+            <FormLabel htmlFor="e-email" required>
+              Email
             </FormLabel>
             <OutlinedInput
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
+              id="e-email"
+              name="e-email"
+              type="email"
+              placeholder="personal@email.com"
+              autoComplete="personal@email.com"
+              required
+            />
+          </FormGrid>
+          <FormGrid item xs={12} md={4}>
+            <FormLabel htmlFor="e-phone" required>
+              Phone
+            </FormLabel>
+            <OutlinedInput
+              id="e-phone"
+              name="e-phone"
+              type="phone"
+              placeholder="+44 07123456789"
+              autoComplete="+44 07123456789"
+              required
+            />
+          </FormGrid>
+
+          <FormGrid item xs={8}>
+            <FormLabel htmlFor="e-address" required>
+              Address
+            </FormLabel>
+            <OutlinedInput
+              id="e-address"
+              name="e-address"
+              type="e-address"
+              placeholder=""
+              required
+            />
+          </FormGrid>
+          <FormGrid item xs={4}>
+            <FormLabel htmlFor="e-zip" required>
+              Zip / Postal code
+            </FormLabel>
+            <OutlinedInput
+              id="e-zip"
+              name="e-zip"
+              type="e-zip"
+              placeholder=""
+              required
             />
           </FormGrid>
         </Grid>
       </Container>
+      {/*  Emergency Contact End-------------------------------------*/}
     </>
   );
 };

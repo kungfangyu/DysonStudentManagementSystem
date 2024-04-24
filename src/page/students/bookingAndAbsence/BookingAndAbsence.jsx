@@ -2,23 +2,19 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 16:34:54
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-18 22:58:03
+ * @LastEditTime: 2024-04-22 10:40:24
  * @FilePath: /csc8019_team_project_frontend/src/page/students/bookingAndAbsence/BookingAndAbsence.jsx
  */
 import * as React from 'react';
 import { useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import MenuIcon from '@mui/icons-material/Menu';
-import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
 import TabContext from '@mui/lab/TabContext';
@@ -30,6 +26,7 @@ import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import AbsenceForm from '../../../components/AbsenceForm';
 import BookingForm from '../../../components/BookingForm';
 import theme from '../../../style/theme';
 
@@ -48,40 +45,11 @@ const BookingAndAbsence = () => {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              Booking & Absence
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <ExitToAppIcon />
-              </Badge>
-            </IconButton>
-          </Toolbar>
-        </Nav>
+        <Nav
+          open={open}
+          toggleDrawer={toggleDrawer}
+          title={'Booking & Absences'}
+        />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -126,11 +94,13 @@ const BookingAndAbsence = () => {
                 <TabPanel value="1">
                   <BookingForm />
                 </TabPanel>
-                <TabPanel value="2">Absence</TabPanel>
+                <TabPanel value="2">
+                  <AbsenceForm />
+                </TabPanel>
               </TabContext>
             </Box>
           </Container>
-          <Copyright sx={{ pt: 4 }} />
+          <Copyright sx={{ pt: 4, pb: 4 }} />
         </Box>
       </Box>
     </ThemeProvider>
