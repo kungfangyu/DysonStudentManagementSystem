@@ -2,10 +2,11 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-23 19:17:30
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-24 06:35:55
+ * @LastEditTime: 2024-04-24 15:58:15
  * @FilePath: /csc8019_team_project_frontend/src/page/students/academicHistory/AcademicHistory.jsx
  */
 
+import dayjs from 'dayjs';
 import * as React from 'react';
 import { useState } from 'react';
 
@@ -23,7 +24,12 @@ import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
+
 import { ThemeProvider } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 import { styled } from '@mui/material/styles';
 import Copyright from '../../../common/Copyright';
@@ -41,6 +47,9 @@ const AcademicPaper = styled(Paper)(({ theme }) => ({
 
 const AcademicHistory = () => {
   const [open, setOpen] = useState(true);
+
+  const [dateAchieved, setDateAchieved] = useState(dayjs(Date()));
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -138,96 +147,21 @@ const AcademicHistory = () => {
                   />
                 </FormGrid>
                 <FormGrid item xs={12} md={4}>
-                  <FormLabel htmlFor="date" required>
-                    Date Achieved
-                  </FormLabel>
-                  <OutlinedInput
-                    size="small"
-                    id="date"
-                    name="date"
-                    type=""
-                    placeholder="MM/YYYY - MM/YYYY"
-                    required
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DatePicker']}>
+                      <DatePicker
+                        label="dateAchieved"
+                        defaultValue={dateAchieved}
+                        onChange={(newValue) => setDateAchieved(newValue)}
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </FormGrid>
               </Grid>
             </AcademicPaper>
             <IconButton
               color="primary"
               sx={{ float: 'right' }}
-              aria-label="create a new academic record"
-            >
-              <AddCircleIcon />
-            </IconButton>
-            <AcademicPaper>
-              <Grid container spacing={2}>
-                <FormGrid item xs={12} md={6}>
-                  <FormLabel htmlFor="institution" required>
-                    Institution
-                  </FormLabel>
-                  <OutlinedInput
-                    id="institution"
-                    size="small"
-                    name="institution"
-                    type=""
-                    required
-                  />
-                </FormGrid>
-                <FormGrid item xs={12} md={6}>
-                  <FormLabel htmlFor="subject" required>
-                    Subject
-                  </FormLabel>
-                  <OutlinedInput
-                    size="small"
-                    id="subject"
-                    name="subject"
-                    type=""
-                    required
-                  />
-                </FormGrid>
-                <FormGrid item xs={12} md={4}>
-                  <FormLabel htmlFor="level" required>
-                    Qualification Level
-                  </FormLabel>
-                  <OutlinedInput
-                    id="level"
-                    size="small"
-                    name="level"
-                    type=""
-                    required
-                  />
-                </FormGrid>
-
-                <FormGrid item xs={12} md={4}>
-                  <FormLabel htmlFor="grade" required>
-                    Grade
-                  </FormLabel>
-                  <OutlinedInput
-                    size="small"
-                    id="grade"
-                    name="grade"
-                    type=""
-                    required
-                  />
-                </FormGrid>
-                <FormGrid item xs={12} md={4}>
-                  <FormLabel htmlFor="date" required>
-                    Date Achieved
-                  </FormLabel>
-                  <OutlinedInput
-                    size="small"
-                    id="date"
-                    name="date"
-                    type=""
-                    placeholder="MM/YYYY - MM/YYYY"
-                    required
-                  />
-                </FormGrid>
-              </Grid>
-            </AcademicPaper>
-            <IconButton
-              color="primary"
-              sx={{ float: 'right', clear: 'both' }}
               aria-label="create a new academic record"
             >
               <AddCircleIcon />

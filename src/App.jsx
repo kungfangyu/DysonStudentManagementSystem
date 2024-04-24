@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-23 19:18:58
+ * @LastEditTime: 2024-04-24 16:24:30
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -44,13 +44,11 @@ const App = () => (
           path="/:moduleId/assignmentandexam/exam/:id"
           element={<Exam />}
         />
-
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/bookingandabsence" element={<BookingAndAbsence />} />
         <Route path="/extensions" element={<Extensions />} />
         <Route path="/courseoperations" element={<CourseInfoOperations />} />
         <Route path="/academichistory" element={<AcademicHistory />} />
-
         <Route path="/user" element={<UserInfo />} />
         <Route path="/forget" element={<ForgetPassword />} />
       </Routes>
