@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-15 14:01:15
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 23:06:33
- * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleList.jsx
+ * @LastEditTime: 2024-04-26 23:05:45
+ * @FilePath: /csc8019_team_project_frontend/src/page/staff/modules/StaffModuleList.jsx
  */
 import * as React from 'react';
 
@@ -27,54 +27,54 @@ const moduleData = [
   {
     moduleId: '01',
     moduleName: 'CSC8019 Advance Java',
-    image: './images/moduleImage01.avif',
+    image: '../../../images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/modules/moduleId',
+    link: '/staff/modules/moduleId',
   },
   {
     moduleId: '02',
     moduleName: 'CSC8011 Database',
-    image: './images/moduleImage01.avif',
+    image: '../../../images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/modules/moduleId',
+    link: '/staff/modules/moduleId',
   },
   {
     moduleId: '03',
     moduleName: 'CSC8011 Database',
-    image: './images/moduleImage01.avif',
+    image: '../../../images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/modules/moduleId',
+    link: '/staff/modules/moduleId',
   },
   {
     moduleId: '04',
     moduleName: 'CSC8011 Database',
-    image: './images/moduleImage01.avif',
+    image: '../../../images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/modules/moduleId',
+    link: '/staff/modules/moduleId',
   },
   {
     moduleId: '05',
     moduleName: 'CSC8011 Database',
-    image: './images/moduleImage01.avif',
+    image: '../../../images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: '/modules/moduleId',
+    link: '/staff/modules/moduleId',
   },
   {
     moduleId: '06',
     moduleName: 'CSC8011 Database',
-    image: './images/moduleImage01.avif',
+    image: '../../../images/moduleImage01.avif',
     description:
       'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
-    link: 'https://google.com',
+    link: '/staff/modules/moduleId',
   },
 ];
 
-const ModuleList = () => {
+const StaffModuleList = () => {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -125,4 +125,4 @@ const ModuleList = () => {
   );
 };
 
-export default ModuleList;
+export default StaffModuleList;

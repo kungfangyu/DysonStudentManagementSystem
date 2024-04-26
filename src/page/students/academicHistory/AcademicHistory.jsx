@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-23 19:17:30
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-24 15:58:15
+ * @LastEditTime: 2024-04-26 22:46:39
  * @FilePath: /csc8019_team_project_frontend/src/page/students/academicHistory/AcademicHistory.jsx
  */
 
@@ -22,7 +22,6 @@ import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 
 import { ThemeProvider } from '@mui/material/styles';
@@ -31,19 +30,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
-import { styled } from '@mui/material/styles';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
-import FormGrid from '../../../style/formStyle';
+import { CardPaper } from '../../../style/cardStyle';
+import { FormGrid } from '../../../style/formStyle';
 import theme from '../../../style/theme';
-
-const AcademicPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4),
-  ...theme.typography.body2,
-  marginTop: theme.spacing(6),
-}));
 
 const AcademicHistory = () => {
   const [open, setOpen] = useState(true);
@@ -95,7 +88,7 @@ const AcademicHistory = () => {
             <Container>
               <h2>Update Academic History</h2>
             </Container>
-            <AcademicPaper>
+            <CardPaper>
               <Grid container spacing={2}>
                 <FormGrid item xs={12} md={6}>
                   <FormLabel htmlFor="institution" required>
@@ -158,7 +151,7 @@ const AcademicHistory = () => {
                   </LocalizationProvider>
                 </FormGrid>
               </Grid>
-            </AcademicPaper>
+            </CardPaper>
             <IconButton
               color="primary"
               sx={{ float: 'right' }}

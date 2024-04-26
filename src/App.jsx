@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-24 16:24:30
+ * @LastEditTime: 2024-04-25 16:11:50
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -11,6 +11,8 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import ForgetPassword from './page/signin/ForgetPassword';
 import SignIn from './page/signin/SignIn';
+import ModuleEdited from './page/staff/modules/ModuleEdited';
+import StaffModuleList from './page/staff/modules/StaffModuleList';
 import AcademicHistory from './page/students/academicHistory/AcademicHistory';
 import BookingAndAbsence from './page/students/bookingAndAbsence/BookingAndAbsence';
 import CourseInfoOperations from './page/students/courseOperations/CourseInfoOperations';
@@ -30,7 +32,11 @@ const App = () => (
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/modules" element={<ModuleList />} />
+        <Route path="/staff/modules" element={<StaffModuleList />} />
+        <Route path="/staff/modules/:moduleId" element={<ModuleEdited />} />
+
         <Route path="/modules/:moduleId" element={<ModuleDetails />} />
+
         <Route path="/:moduleId/material" element={<ModuleMaterial />} />
         <Route
           path="/:moduleId/assignmentandexam"
