@@ -2,11 +2,12 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-23 13:25:45
+ * @LastEditTime: 2024-04-26 21:15:24
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
 
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
@@ -62,6 +63,12 @@ const menuItems = [
     primary: 'User',
     icon: <AccountCircleIcon />,
     link: '/user',
+  },
+  {
+    menuId: 'logout',
+    primary: 'Log out',
+    icon: <ExitToAppIcon />,
+    link: '/',
   },
 ];
 

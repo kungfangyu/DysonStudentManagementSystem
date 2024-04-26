@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-23 18:30:59
+ * @LastEditTime: 2024-04-26 22:47:17
  * @FilePath: /csc8019_team_project_frontend/src/components/PopupEditStatus.jsx
  */
 import Button from '@mui/material/Button';
@@ -18,7 +18,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 
 import { getStatusText } from '../helpers/helperFunction';
-import FormGrid from '../style/formStyle';
+import { FormGrid } from '../style/formStyle';
 
 const statusSelect = [
   {

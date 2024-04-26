@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 
-import FormGrid from '../style/formStyle';
+import { FormGrid } from '../style/formStyle';
 
 const titleSelect = ['Miss', 'Mrs', 'Mr', 'Dr.', 'Prof'];
 
