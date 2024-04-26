@@ -2,13 +2,13 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 00:50:07
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-05 09:50:44
+ * @LastEditTime: 2024-04-26 21:12:58
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/Nav.jsx
  */
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar from '@mui/material/AppBar';
-import Badge from '@mui/material/Badge';
+import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
@@ -65,10 +65,10 @@ const Nav = ({ open, toggleDrawer, title }) => {
         >
           {title}
         </Typography>
+        <Avatar alt="Fane" src="/images/Fane.png" />
+
         <IconButton color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <ExitToAppIcon />
-          </Badge>
+          <ExitToAppIcon />
         </IconButton>
       </Toolbar>
     </NavStyle>
