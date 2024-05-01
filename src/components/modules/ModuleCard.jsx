@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 21:37:20
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 23:05:19
+ * @LastEditTime: 2024-05-01 13:37:35
  * @FilePath: /csc8019_team_project_frontend/src/components/modules/ModuleCard.jsx
  */
 import { CardActionArea } from '@mui/material';
@@ -19,7 +19,11 @@ const ModuleCard = ({ moduleData }) => {
     <Grid container sx={{ justifyContent: 'space-around' }}>
       {moduleData.map((items) => {
         return (
-          <Link href={`${items.link}`} underline="none" key={items.moduleId}>
+          <Link
+            href={`/modules/${items.moduleID}`}
+            underline="none"
+            key={items.moduleID}
+          >
             <Card
               sx={{ maxWidth: 'auto', width: 345, mt: 3 }}
               item
@@ -31,15 +35,15 @@ const ModuleCard = ({ moduleData }) => {
                 <CardMedia
                   component="img"
                   height="140"
-                  image={items.image}
+                  image={items.modulePhoto}
                   alt="green iguana"
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {items.moduleName}
+                  <Typography gutterBottom variant="h6" component="div">
+                    {items.moduleID}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {items.description}
+                    {items.moduleName}
                   </Typography>
                 </CardContent>
               </CardActionArea>

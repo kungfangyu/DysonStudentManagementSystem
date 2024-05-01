@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 22:52:25
+ * @LastEditTime: 2024-04-30 14:31:22
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleDetails.jsx
  */
 import * as React from 'react';
@@ -55,11 +55,11 @@ const ModuleDetails = () => {
       { announcement: 'Module announcements', postedTime: '13/04/2024' },
     ],
     relatedLink: [
-      {
-        title: 'Syllabus',
-        link: `/${moduleId}/syllabus`,
-        image: '/images/moduleMaterial.jpg',
-      },
+      // {
+      //   title: 'Syllabus',
+      //   link: `/${moduleId}/syllabus`,
+      //   image: '/images/moduleMaterial.jpg',
+      // },
       {
         title: 'Materials',
         link: `/${moduleId}/material`,
