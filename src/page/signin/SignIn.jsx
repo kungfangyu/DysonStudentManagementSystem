@@ -2,13 +2,14 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-09 07:54:23
+ * @LastEditTime: 2024-05-01 13:14:26
  * @FilePath: /csc8019_team_project_frontend/src/page/signin/SignIn.jsx
  */
 
 import * as React from 'react';
 import { useState } from 'react';
-
+import service from '../../api/axios';
+import { useAuth } from '../../provider/AuthProvider';
 // Mui components
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,19 +22,28 @@ import Copyright from '../../common/Copyright';
 import SignInForm from '../../components/SignInForm';
 import theme from '../../style/theme';
 
-export default function SignIn() {
+const SignIn = () => {
+  const { setToken } = useAuth();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      userId: userId,
-      password: password,
-    });
-    // clear input
-    setUserId('');
-    setPassword('');
+    try {
+      const response = await service.post('/login', {
+        userID: userId,
+        password: password,
+      });
+      const { accessToken } = response;
+      console.log(response);
+
+      // save accessToken in Local Storage
+      localStorage.setItem('accessToken', accessToken);
+      setToken(accessToken);
+      window.location.href = '/modules';
+    } catch (error) {
+      console.error('Login failed', error);
+    }
   };
 
   return (
@@ -93,17 +103,6 @@ export default function SignIn() {
               alignItems: 'center',
             }}
           >
-            {/* <TabContext value={role}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabList
-                  onChange={handleChange}
-                  aria-label="lab API tabs example"
-                >
-                  <Tab label="Student" value="1" />
-                  <Tab label="Staff" value="0" />
-                </TabList>
-              </Box>
-              <TabPanel value="1"> */}
             <SignInForm
               handleSubmit={handleSubmit}
               setPassword={setPassword}
@@ -111,17 +110,6 @@ export default function SignIn() {
               userId={userId}
               password={password}
             />
-            {/* </TabPanel>
-              <TabPanel value="0">
-                <SignInForm
-                  handleSubmit={handleSubmit}
-                  setPassword={setPassword}
-                  setUserId={setUserId}
-                  userId={userId}
-                  password={password}
-                />
-              </TabPanel>
-            </TabContext> */}
 
             <Copyright sx={{ mt: 5 }} />
           </Box>
@@ -129,4 +117,6 @@ export default function SignIn() {
       </Grid>
     </ThemeProvider>
   );
-}
+};
+
+export default SignIn;
