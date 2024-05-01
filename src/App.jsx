@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 13:20:58
+ * @LastEditTime: 2024-05-01 15:43:38
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -88,7 +88,7 @@ const App = () => {
               element={<ModuleEdited />}
             />
             <Route exact path="/studentlist" element={<StudentList />} />
-            <Route exact path="/userinfo" element={<UserInfo />} />
+            <Route exact path="/user" element={<UserInfo />} />
             <Route exact path="/forget" element={<ForgetPassword />} />
             <Route exact path="/signin" element={<SignIn />} />
           </Routes>

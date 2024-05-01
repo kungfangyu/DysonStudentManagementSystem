@@ -1,29 +1,106 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { PhotoCamera } from '@mui/icons-material';
+import SendIcon from '@mui/icons-material/Send';
+import { MenuItem, Select } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import Select from '@mui/material/Select';
 
+import {
+  getUserEmergencyData,
+  getUserPrimaryData,
+  getUserSecondaryData,
+} from '../api/user';
+import { SIGNIN_URL } from '../data/data';
+import { parseJwt } from '../helpers/jwt';
 import { FormGrid } from '../style/formStyle';
 
 const titleSelect = ['Miss', 'Mrs', 'Mr', 'Dr.', 'Prof'];
 
 const UserInfoForm = () => {
-  const [title, setTitle] = useState([]);
-  const [emergencyTitle, setEmergencyTitle] = useState([]);
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
+  //Contact Information
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [personalEmail, setPersonalEmail] = useState('');
+  const [dysonEmail, setDysonEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [postcode, setPostcode] = useState('');
+
+  //Emergency Contact
+  const [eTitle, setETitle] = useState([]);
+
+  const [emergencyContact, setEmergencyContact] = useState([]);
+
+  const fetchPrimaryData = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const response = await getUserPrimaryData(parseToken.userID);
+        const { firstName, lastName, personalEmail, dysonEmail, phone } =
+          response;
+        setFirstName(firstName);
+        setLastName(lastName);
+        setDysonEmail(dysonEmail);
+        setPersonalEmail(personalEmail);
+        setPhone(phone);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetchPrimaryData:', error);
+    }
+  }, []);
+
+  const fetchSecondaryData = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const response = await getUserSecondaryData(parseToken.userID);
+        const { middleNames, postcode, address } = response;
+        setMiddleName(middleNames);
+        setAddress(address);
+        setPostcode(postcode);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetchPrimaryData:', error);
+    }
+  }, []);
+
+  const fetchEmergencyData = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const response = await getUserEmergencyData(parseToken.userID);
+        setEmergencyContact(response);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetchPrimaryData:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPrimaryData();
+    fetchSecondaryData();
+    fetchEmergencyData();
+  }, [fetchPrimaryData, fetchSecondaryData, fetchEmergencyData]);
 
   const handleEmergencyTitleChange = (event) => {
-    setEmergencyTitle(event.target.value);
+    setETitle(event.target.value);
   };
 
   return (
@@ -73,6 +150,7 @@ const UserInfoForm = () => {
             <OutlinedInput
               id="first-name"
               name="first-name"
+              value={firstName}
               type="name"
               placeholder="John"
               autoComplete="first name"
@@ -85,8 +163,8 @@ const UserInfoForm = () => {
               id="middle-name"
               name="middle-name"
               type="middle-name"
-              placeholder="Snow"
-              autoComplete="middle name"
+              value={middleName}
+              placeholder=""
               required
             />
           </FormGrid>
@@ -96,6 +174,7 @@ const UserInfoForm = () => {
             </FormLabel>
             <OutlinedInput
               id="last-name"
+              value={lastName}
               name="last-name"
               type="last-name"
               placeholder="Snow"
@@ -105,29 +184,15 @@ const UserInfoForm = () => {
           </FormGrid>
 
           <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="email">Title</FormLabel>
-            <Select
-              displayEmpty
-              value={title}
-              onChange={handleTitleChange}
-              input={<OutlinedInput />}
-              renderValue={(selected) => {
-                if (selected.length === 0) {
-                  return <em>Title</em>;
-                }
-                return selected;
-              }}
-              inputProps={{ 'aria-label': 'Without label' }}
-            >
-              <MenuItem disabled value="">
-                <em>Title</em>
-              </MenuItem>
-              {titleSelect.map((title) => (
-                <MenuItem key={title} value={title}>
-                  {title}
-                </MenuItem>
-              ))}
-            </Select>
+            <FormLabel htmlFor="email">Dyson Email</FormLabel>
+            <OutlinedInput
+              id="dyson-email"
+              name="dyson-email"
+              type="email"
+              value={dysonEmail}
+              required
+              disabled
+            />
           </FormGrid>
           <FormGrid item xs={12} md={4}>
             <FormLabel htmlFor="email">Email</FormLabel>
@@ -135,37 +200,38 @@ const UserInfoForm = () => {
               id="email"
               name="email"
               type="email"
-              placeholder="personal@email.com"
-              autoComplete="personal@email.com"
+              value={personalEmail}
               required
             />
           </FormGrid>
           <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="address1" required>
+            <FormLabel htmlFor="phone" required>
               Phone
             </FormLabel>
             <OutlinedInput
               id="phone"
               name="phone"
               type="phone"
+              value={phone}
               placeholder="+44 07123456789"
               autoComplete="+44 07123456789"
               required
             />
           </FormGrid>
 
-          <FormGrid item xs={8}>
+          <FormGrid item xs={7}>
             <FormLabel htmlFor="address" required>
               Address
             </FormLabel>
             <OutlinedInput
               id="address"
               name="address"
+              value={address}
               type="address"
               required
             />
           </FormGrid>
-          <FormGrid item xs={4}>
+          <FormGrid item xs={5}>
             <FormLabel htmlFor="zip" required>
               Zip / Postal code
             </FormLabel>
@@ -173,8 +239,7 @@ const UserInfoForm = () => {
               id="zip"
               name="zip"
               type="zip"
-              placeholder="12345"
-              autoComplete="shipping postal-code"
+              value={postcode}
               required
             />
           </FormGrid>
@@ -193,111 +258,136 @@ const UserInfoForm = () => {
           justifyContent: 'end',
         }}
       >
-        <Grid container spacing={1} sx={{ justifyContent: 'end' }}>
-          <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="e-first-name" required>
-              First name
-            </FormLabel>
-            <OutlinedInput
-              id="e-first-name"
-              name="e-first-name"
-              type="name"
-              placeholder=""
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="e-last-name">Last name</FormLabel>
-            <OutlinedInput
-              id="e-last-name"
-              name="e-last-name"
-              type="e-last-name"
-              placeholder=""
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="e-title">Title</FormLabel>
-            <Select
-              displayEmpty
-              value={emergencyTitle}
-              onChange={handleEmergencyTitleChange}
-              input={<OutlinedInput />}
-              renderValue={(selected) => {
-                if (selected.length === 0) {
-                  return <em>Title</em>;
-                }
-                return selected;
-              }}
-              inputProps={{ 'aria-label': 'Without label' }}
+        {emergencyContact.map((contact, index) => {
+          return (
+            <Grid
+              index={index}
+              container
+              spacing={1}
+              sx={{ justifyContent: 'end' }}
             >
-              <MenuItem disabled value="">
-                <em>Title</em>
-              </MenuItem>
-              {titleSelect.map((title) => (
-                <MenuItem key={title} value={title}>
-                  {title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormGrid>
-          <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="relation">Relation</FormLabel>
-            <OutlinedInput id="relation" name="relation" type="" required />
-          </FormGrid>
-          <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="e-email" required>
-              Email
-            </FormLabel>
-            <OutlinedInput
-              id="e-email"
-              name="e-email"
-              type="email"
-              placeholder="personal@email.com"
-              autoComplete="personal@email.com"
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={12} md={4}>
-            <FormLabel htmlFor="e-phone" required>
-              Phone
-            </FormLabel>
-            <OutlinedInput
-              id="e-phone"
-              name="e-phone"
-              type="phone"
-              placeholder="+44 07123456789"
-              autoComplete="+44 07123456789"
-              required
-            />
-          </FormGrid>
+              <FormGrid item xs={12} md={4}>
+                <FormLabel htmlFor="e-first-name" required>
+                  First name
+                </FormLabel>
+                <OutlinedInput
+                  id="e-first-name"
+                  name="e-first-name"
+                  type="name"
+                  placeholder=""
+                  value={contact.firstName}
+                  required
+                />
+              </FormGrid>
+              <FormGrid item xs={12} md={4}>
+                <FormLabel htmlFor="e-last-name">Last name</FormLabel>
+                <OutlinedInput
+                  id="e-last-name"
+                  name="e-last-name"
+                  type="e-last-name"
+                  value={contact.lastName}
+                  placeholder=""
+                  required
+                />
+              </FormGrid>
+              <FormGrid item xs={12} md={4}>
+                <FormLabel htmlFor="e-title">Title</FormLabel>
+                <Select
+                  displayEmpty
+                  value={contact.title}
+                  onChange={handleEmergencyTitleChange}
+                  input={<OutlinedInput />}
+                  renderValue={(selected) => {
+                    if (selected.length === 0) {
+                      return <em>Title</em>;
+                    }
+                    return selected;
+                  }}
+                  inputProps={{ 'aria-label': 'Without label' }}
+                >
+                  <MenuItem disabled value="">
+                    <em>Title</em>
+                  </MenuItem>
+                  {titleSelect.map((title) => (
+                    <MenuItem key={title} value={eTitle}>
+                      {title}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormGrid>
+              <FormGrid item xs={12} md={4}>
+                <FormLabel htmlFor="relation">Relation</FormLabel>
+                <OutlinedInput
+                  id="relation"
+                  value={contact.relation}
+                  name="relation"
+                  type=""
+                  required
+                />
+              </FormGrid>
+              <FormGrid item xs={12} md={4}>
+                <FormLabel htmlFor="e-email" required>
+                  Email
+                </FormLabel>
+                <OutlinedInput
+                  id="e-email"
+                  name="e-email"
+                  type="email"
+                  value={contact.email}
+                  placeholder="personal@email.com"
+                  required
+                />
+              </FormGrid>
+              <FormGrid item xs={12} md={4}>
+                <FormLabel htmlFor="e-phone" required>
+                  Phone
+                </FormLabel>
+                <OutlinedInput
+                  id="e-phone"
+                  name="e-phone"
+                  type="phone"
+                  value={contact.phone}
+                  placeholder="+44 07123456789"
+                  autoComplete="+44 07123456789"
+                  required
+                />
+              </FormGrid>
 
-          <FormGrid item xs={8}>
-            <FormLabel htmlFor="e-address" required>
-              Address
-            </FormLabel>
-            <OutlinedInput
-              id="e-address"
-              name="e-address"
-              type="e-address"
-              placeholder=""
-              required
-            />
-          </FormGrid>
-          <FormGrid item xs={4}>
-            <FormLabel htmlFor="e-zip" required>
-              Zip / Postal code
-            </FormLabel>
-            <OutlinedInput
-              id="e-zip"
-              name="e-zip"
-              type="e-zip"
-              placeholder=""
-              required
-            />
-          </FormGrid>
-        </Grid>
+              <FormGrid item xs={8}>
+                <FormLabel htmlFor="e-address" required>
+                  Address
+                </FormLabel>
+                <OutlinedInput
+                  id="e-address"
+                  name="e-address"
+                  type="e-address"
+                  value={contact.address}
+                  placeholder=""
+                  required
+                />
+              </FormGrid>
+              <FormGrid item xs={4}>
+                <FormLabel htmlFor="e-zip" required>
+                  Zip / Postal code
+                </FormLabel>
+                <OutlinedInput
+                  id="e-zip"
+                  name="e-zip"
+                  type="e-zip"
+                  value={contact.postcode}
+                  placeholder=""
+                  required
+                />
+              </FormGrid>
+            </Grid>
+          );
+        })}
       </Container>
+      <Box sx={{ textAlign: 'center' }}>
+        <Button variant="contained" endIcon={<SendIcon />} size="large">
+          Send
+        </Button>
+      </Box>
       {/*  Emergency Contact End-------------------------------------*/}
     </>
   );

@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-29 12:03:02
+ * @LastEditTime: 2024-05-01 23:17:46
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
@@ -20,6 +20,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
+import { SIGNIN_URL } from '../../data/data';
+import { parseJwt } from '../../helpers/jwt';
 
 const menuItems = [
   {
@@ -27,70 +29,104 @@ const menuItems = [
     primary: 'Modules',
     icon: <ViewModuleIcon />,
     link: '/modules',
+    type: 'student',
+  },
+  {
+    menuId: 'staffmodules',
+    primary: 'Modules',
+    icon: <ViewModuleIcon />,
+    link: 'staff/modules',
+    type: 'admin',
+  },
+  {
+    menuId: 'timetable',
+    primary: 'Time Table',
+    icon: <CalendarMonthIcon />,
+    link: 'staff/timetable',
+    type: 'admin',
   },
   {
     menuId: 'timetable',
     primary: 'Time Table',
     icon: <CalendarMonthIcon />,
     link: '/timetable',
+    type: 'student',
   },
   {
     menuId: 'studentlist',
     primary: 'Student List',
     icon: <ListAltIcon />,
     link: '/studentlist',
+    type: 'admin',
   },
+
   {
     menuId: 'bookingandabsence',
     primary: 'Booking & Absence',
     icon: <PeopleIcon />,
     link: '/bookingandabsence',
+    type: 'student',
   },
   {
     menuId: 'extensions',
     primary: 'Extensions',
     icon: <SendTimeExtensionIcon />,
     link: '/extensions',
+    type: 'student',
   },
   {
     menuId: 'courseoperations',
     primary: 'CourseInfo & Operations',
     icon: <LayersIcon />,
     link: '/courseoperations',
+    type: 'student',
   },
   {
     menuId: 'academichistory',
     primary: 'Academic History',
     icon: <DvrIcon />,
     link: '/academichistory',
-  },
-  {
-    menuId: 'users',
-    primary: 'User',
-    icon: <AccountCircleIcon />,
-    link: '/user',
-  },
-  {
-    menuId: 'logout',
-    primary: 'Log out',
-    icon: <ExitToAppIcon />,
-    link: '/',
+    type: 'student',
   },
 ];
 
 const MenuItems = () => {
+  const token = parseJwt(localStorage.getItem('accessToken'));
+  const userType = token.userType;
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    window.location.href = SIGNIN_URL;
+  };
   return (
     <>
-      {menuItems.map((items) => {
-        return (
-          <MenuList key={items.menuId}>
-            <MenuItem href={items.link} component="a">
-              <ListItemIcon>{items.icon}</ListItemIcon>
-              <ListItemText>{items.primary}</ListItemText>
+      {menuItems
+        .filter((item) => item.type === userType || !item.type)
+        .map((item) => (
+          <MenuList key={item.menuId}>
+            <MenuItem href={item.link} component="a">
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText>{item.primary}</ListItemText>
             </MenuItem>
           </MenuList>
-        );
-      })}
+        ))}
+      <MenuList>
+        <MenuItem href="/user" component="a">
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText>User Info</ListItemText>
+        </MenuItem>
+      </MenuList>
+
+      <MenuList>
+        <MenuItem component="a" onClick={handleLogout}>
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
+          <ListItemText>Logout</ListItemText>
+        </MenuItem>
+      </MenuList>
     </>
   );
 };

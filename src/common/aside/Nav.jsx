@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 00:50:07
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 21:12:58
+ * @LastEditTime: 2024-05-01 23:14:32
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/Nav.jsx
  */
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -37,6 +37,10 @@ const NavStyle = styled(MuiAppBar, {
 }));
 
 const Nav = ({ open, toggleDrawer, title }) => {
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    window.location.href = '/signin';
+  };
   return (
     <NavStyle position="fixed" open={open}>
       <Toolbar
@@ -67,7 +71,7 @@ const Nav = ({ open, toggleDrawer, title }) => {
         </Typography>
         <Avatar alt="Fane" src="/images/Fane.png" />
 
-        <IconButton color="inherit">
+        <IconButton color="inherit" onClick={handleLogout}>
           <ExitToAppIcon />
         </IconButton>
       </Toolbar>
