@@ -2,10 +2,11 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 23:17:46
+ * @LastEditTime: 2024-05-02 01:11:50
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
+import { NavLink } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -42,7 +43,7 @@ const menuItems = [
     menuId: 'timetable',
     primary: 'Time Table',
     icon: <CalendarMonthIcon />,
-    link: 'staff/timetable',
+    link: '/stafftimetable',
     type: 'admin',
   },
   {
@@ -98,20 +99,33 @@ const MenuItems = () => {
     localStorage.removeItem('accessToken');
     window.location.href = SIGNIN_URL;
   };
+  const isActive = (link) => {
+    return window.location.pathname === link;
+  };
+
   return (
     <>
       {menuItems
         .filter((item) => item.type === userType || !item.type)
         .map((item) => (
           <MenuList key={item.menuId}>
-            <MenuItem href={item.link} component="a">
+            <MenuItem
+              href={item.link}
+              component="a"
+              className={isActive(item.link) ? 'active' : ''}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText>{item.primary}</ListItemText>
             </MenuItem>
           </MenuList>
         ))}
+      {/*  */}
       <MenuList>
-        <MenuItem href="/user" component="a">
+        <MenuItem
+          to="/user"
+          component={NavLink}
+          className={isActive('/user') ? 'active' : ''}
+        >
           <ListItemIcon>
             <AccountCircleIcon />
           </ListItemIcon>

@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-22 22:20:01
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 12:59:26
+ * @LastEditTime: 2024-05-02 13:09:18
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/Assignment.jsx
  */
 
@@ -41,7 +41,6 @@ const Assignment = () => {
       if (token) {
         const response = await getCoursesworkDetails(moduleId, courseworkId);
         const results = response;
-        console.log('🚀 ~ fetchCoursework ~ response:', response);
         setAssignmentData(results);
       } else {
         window.location.href = SIGNIN_URL;
@@ -63,17 +62,17 @@ const Assignment = () => {
   //   anchor.click();
   // };
 
-  const handleUpload = () => {
-    document.getElementById('fileInput').click();
-  };
+  // const handleUpload = () => {
+  //   document.getElementById('fileInput').click();
+  // };
 
-  const assignmentDetails = {
-    due: '11/05/2024 13:00',
-    description:
-      'Basic principles of concurrent programming. Thread synchronisation mechanisms. Challenges of concurrent programming such as interference and deadlocks. ',
-    assignmentName: 'Assignment File',
-    assignmentFile: '/path/to/week1_material1.pdf',
-  };
+  // const assignmentDetails = {
+  //   due: '11/05/2024 13:00',
+  //   description:
+  //     'Basic principles of concurrent programming. Thread synchronisation mechanisms. Challenges of concurrent programming such as interference and deadlocks. ',
+  //   assignmentName: 'Assignment File',
+  //   assignmentFile: '/path/to/week1_material1.pdf',
+  // };
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
@@ -146,7 +145,7 @@ const Assignment = () => {
               <IconButton
                 variant="outline"
                 color="secondary"
-                onClick={handleUpload}
+                // onClick={handleUpload}
                 sx={{ ml: 1 }}
               >
                 <CloudUploadIcon />

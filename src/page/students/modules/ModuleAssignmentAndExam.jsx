@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 11:12:30
+ * @LastEditTime: 2024-05-02 13:06:52
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleAssignmentAndExam.jsx
  */
 import * as React from 'react';
@@ -75,19 +75,6 @@ const ModuleAssignmentAndExam = () => {
     fetchExams();
   }, [fetchCoursework, fetchExams]);
 
-  const exams = [
-    {
-      id: '1',
-      exams: 'Exam 01',
-      link: `exam/examId`,
-    },
-    {
-      id: '2',
-      exams: 'Exam 02',
-      link: `exam/examId`,
-    },
-  ];
-
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
@@ -145,12 +132,12 @@ const ModuleAssignmentAndExam = () => {
             {examData.map((items, index) => {
               return (
                 <List
-                  sx={{ width: '100%', maxWidth: 360, padding: 0 }}
+                  sx={{ width: '100%', maxWidth: 600, padding: 0 }}
                   key={index}
                 >
                   <ListItem>
-                    <ListItemText primary={items.exams} />
-                    <Link to={items.link}>
+                    <ListItemText primary={`Exam: ${items.examID}`} />
+                    <Link to={`exam/${items.examID}`}>
                       <IconButton>
                         <OpenInNewIcon />
                       </IconButton>
