@@ -2,15 +2,11 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-22 22:20:01
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 22:50:28
+ * @LastEditTime: 2024-05-02 12:59:26
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/Assignment.jsx
  */
 
-import * as React from 'react';
-import { useState } from 'react';
-
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -20,25 +16,52 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
+import * as React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getCoursesworkDetails } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import { SIGNIN_URL } from '../../../data/data';
 import theme from '../../../style/theme';
 
 const Assignment = () => {
+  const { moduleId, courseworkId } = useParams();
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const [assignmentData, setAssignmentData] = useState([]);
 
-  const handleDownload = () => {
-    const url = 'https://example.com/file.zip';
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'file.zip';
-    anchor.click();
-  };
+  const fetchCourseworkDetails = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getCoursesworkDetails(moduleId, courseworkId);
+        const results = response;
+        console.log('🚀 ~ fetchCoursework ~ response:', response);
+        setAssignmentData(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCourseworkDetails();
+  }, [fetchCourseworkDetails]);
+
+  // const handleDownload = () => {
+  //   const url = 'https://example.com/file.zip';
+  //   const anchor = document.createElement('a');
+  //   anchor.href = url;
+  //   anchor.download = 'file.zip';
+  //   anchor.click();
+  // };
 
   const handleUpload = () => {
     document.getElementById('fileInput').click();
@@ -58,7 +81,7 @@ const Assignment = () => {
         <Nav
           open={open}
           toggleDrawer={toggleDrawer}
-          title={'ModuleName - Assignment'}
+          title={`${moduleId} - Assignment`}
         />
         <Aside variant="permanent" open={open}>
           <Toolbar
@@ -91,9 +114,17 @@ const Assignment = () => {
             }}
           >
             <h2>Assignments Descriptions</h2>
-            <Typography>Due Date: {assignmentDetails.due}</Typography>
-            <Typography mt={2}>{assignmentDetails.description}</Typography>
+            <Typography color={'primary'}>
+              Due Date: {assignmentData.deadline}
+            </Typography>
             <Typography mt={2}>
+              Descriptions: {assignmentData.description}
+            </Typography>
+            <Typography mt={2}>
+              Percentage of Module: {assignmentData.percentageOfModule}%
+            </Typography>
+
+            {/* <Typography mt={2}>
               {assignmentDetails.assignmentName}:
               <IconButton
                 variant="outline"
@@ -103,7 +134,7 @@ const Assignment = () => {
               >
                 <CloudDownloadIcon />
               </IconButton>
-            </Typography>
+            </Typography> */}
             <Typography variant="h6" component="h6" mt={2}>
               Submit Your Assignment:
               <input

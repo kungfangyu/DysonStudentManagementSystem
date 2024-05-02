@@ -2,12 +2,12 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 22:27:07
+ * @LastEditTime: 2024-05-02 11:12:30
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleAssignmentAndExam.jsx
  */
 import * as React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -27,24 +27,53 @@ import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
 import theme from '../../../style/theme';
 
+import { getCourseworks, getExams } from '../../../api/modules';
+import { SIGNIN_URL } from '../../../data/data';
+
 const ModuleAssignmentAndExam = () => {
+  const { moduleId } = useParams();
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const assignments = [
-    {
-      id: '1',
-      assignment: 'Assignment 01',
-      link: `assignment/assignmentId`,
-    },
-    {
-      id: '2',
-      assignment: 'Assignment 02',
-      link: `assignment/assignmentId`,
-    },
-  ];
+  const [assignmentData, setAssignmentData] = useState([]);
+  const [examData, setExamData] = useState([]);
+
+  const fetchCoursework = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getCourseworks(moduleId);
+        const results = response;
+        setAssignmentData(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
+
+  const fetchExams = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getExams(moduleId);
+        const results = response;
+        setExamData(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
+
+  useEffect(() => {
+    fetchCoursework();
+    fetchExams();
+  }, [fetchCoursework, fetchExams]);
 
   const exams = [
     {
@@ -95,15 +124,15 @@ const ModuleAssignmentAndExam = () => {
             }}
           >
             <h2>Assignments</h2>
-            {assignments.map((items, index) => {
+            {assignmentData.map((items, index) => {
               return (
                 <List
-                  sx={{ width: '100%', maxWidth: 360, padding: 0 }}
+                  sx={{ width: '100%', maxWidth: 600, padding: 0 }}
                   key={index}
                 >
                   <ListItem>
-                    <ListItemText primary={items.assignment} />
-                    <Link to={items.link}>
+                    <ListItemText primary={items.description} />
+                    <Link to={`assignment/${items.courseworkId}`}>
                       <IconButton>
                         <OpenInNewIcon />
                       </IconButton>
@@ -113,7 +142,7 @@ const ModuleAssignmentAndExam = () => {
               );
             })}
             <h2>Exams</h2>
-            {exams.map((items, index) => {
+            {examData.map((items, index) => {
               return (
                 <List
                   sx={{ width: '100%', maxWidth: 360, padding: 0 }}
