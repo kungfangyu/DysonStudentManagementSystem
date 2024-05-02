@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 15:43:38
+ * @LastEditTime: 2024-05-02 13:07:52
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -14,6 +14,7 @@ import SignIn from './page/signin/SignIn';
 import ModuleEdited from './page/staff/modules/ModuleEdited';
 import StaffModuleList from './page/staff/modules/StaffModuleList';
 import StudentList from './page/staff/studentList/StudentList';
+import StaffTimeTable from './page/staff/timeTable/StaffTimeTable.jsx';
 import AcademicHistory from './page/students/academicHistory/AcademicHistory';
 import BookingAndAbsence from './page/students/bookingAndAbsence/BookingAndAbsence';
 import CourseInfoOperations from './page/students/courseOperations/CourseInfoOperations';
@@ -23,6 +24,7 @@ import Exam from './page/students/modules/Exam';
 import ModuleAssignmentAndExam from './page/students/modules/ModuleAssignmentAndExam';
 import ModuleDetails from './page/students/modules/ModuleDetails';
 import ModuleList from './page/students/modules/ModuleList';
+import ModuleMaterial from './page/students/modules/ModuleMaterial';
 import TimeTable from './page/students/timeTable/TimeTable';
 import UserInfo from './page/UserInfo';
 import AuthProvider from './provider/AuthProvider.jsx';
@@ -46,6 +48,8 @@ const App = () => {
             <Route exact path="/modules" element={<ModuleList />} />
             <Route exact path="/timeTable" element={<TimeTable />} />
             <Route exact path="/extensions" element={<Extensions />} />
+            <Route exact path="/stafftimetable" element={<StaffTimeTable />} />
+
             <Route
               exact
               path="/courseoperations"
@@ -58,17 +62,22 @@ const App = () => {
             />
             <Route
               exact
+              path="/:moduleId/materials"
+              element={<ModuleMaterial />}
+            />
+            <Route
+              exact
               path="/bookingandabsence"
               element={<BookingAndAbsence />}
             />
             <Route
               exact
-              path="/:moduleId/assignmentandexam/exam/:id"
+              path="/:moduleId/assignmentandexam/exam/:examId"
               element={<Exam />}
             />
             <Route
               exact
-              path="/:moduleId/assignmentandexam/assignment/:id"
+              path="/:moduleId/assignmentandexam/assignment/:courseworkId"
               element={<Assignment />}
             />
             <Route

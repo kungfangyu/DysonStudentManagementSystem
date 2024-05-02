@@ -2,13 +2,13 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-22 22:20:01
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 23:02:56
+ * @LastEditTime: 2024-05-02 13:13:50
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/Exam.jsx
  */
 
 import * as React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -20,18 +20,40 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-
+import { getExamsDetails } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import { SIGNIN_URL } from '../../../data/data';
 import theme from '../../../style/theme';
 
 const Exam = () => {
+  const { moduleId, examId } = useParams();
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const [examData, setAssignmentData] = useState();
+
+  const fetchExamDetails = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getExamsDetails(moduleId, examId);
+        const results = response;
+        setAssignmentData(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchExamDetails();
+  }, [fetchExamDetails]);
 
   const examDetails = {
     date: '11/05/2024 13:00',
@@ -47,7 +69,7 @@ const Exam = () => {
         <Nav
           open={open}
           toggleDrawer={toggleDrawer}
-          title={'ModuleName - Exam'}
+          title={`${moduleId} - Exam`}
         />
         <Aside variant="permanent" open={open}>
           <Toolbar
@@ -80,11 +102,19 @@ const Exam = () => {
             }}
           >
             <h2>Exam Descriptions</h2>
-            <Typography>Due Date: {examDetails.date}</Typography>
-            <Typography mt={2}>{examDetails.description}</Typography>
+            <Typography mt={2} color={'primary'}>
+              Start: {examData.startTime}
+            </Typography>
+            <Typography mt={2} color={'primary'}>
+              End: {examData.endTime}
+            </Typography>
+
+            <Typography mt={2}>
+              Percentage of Module: {examData.percentageOfModule}
+            </Typography>
             <Typography mt={2}>
               Link to Exam :
-              <Link to={examDetails.link}>
+              <Link to={examData.link}>
                 <IconButton variant="outline" color="secondary" sx={{ ml: 1 }}>
                   <OpenInNewIcon />
                 </IconButton>

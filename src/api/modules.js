@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-30 17:48:02
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 11:18:14
+ * @LastEditTime: 2024-05-02 13:10:17
  * @FilePath: /csc8019_team_project_frontend/src/api/modules.js
  */
 import service from './axios';
@@ -30,7 +30,14 @@ export const getCoursesworkDetails = async (moduleID, courseworkID) => {
 
 export const getExams = async (moduleID) => {
   return await service({
-    url: `/by-moduleID/${moduleID}`,
+    url: `/exam/by-moduleID/${moduleID}`,
+    method: 'get',
+  });
+};
+
+export const getExamsDetails = async (moduleID, examID) => {
+  return await service({
+    url: `/exam/${moduleID}/${examID}`,
     method: 'get',
   });
 };
