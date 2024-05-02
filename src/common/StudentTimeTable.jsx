@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-17 19:15:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-21 16:50:14
+ * @LastEditTime: 2024-05-02 00:09:18
  * @FilePath: /csc8019_team_project_frontend/src/common/StudentTimeTable.jsx
  */
 import Button from '@mui/material/Button';
@@ -28,21 +28,18 @@ const StudentTimeTable = () => {
       start: new Date('2024-04-22T13:00:00.000Z'),
       end: new Date('2024-04-22T14:30:00.000Z'),
       allDay: false,
-      location: 'FDC 1001',
     },
     {
       title: 'CSC9019',
       start: new Date('2024-04-24T13:00:00.000Z'),
       end: new Date('2024-04-24T15:30:00.000Z'),
       allDay: false,
-      location: 'FDC 1001',
     },
     {
       title: 'CSC8022',
       start: new Date('2024-04-25T15:00:00.000Z'),
       end: new Date('2024-04-25T16:30:00.000Z'),
       allDay: false,
-      location: 'FDC 1001',
     },
   ];
 

@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 23:03:38
- * @FilePath: /csc8019_team_project_frontend/src/components/PopupAddCoursework.jsx
+ * @LastEditTime: 2024-05-02 10:44:36
+ * @FilePath: /csc8019_team_project_frontend/src/components/modules/PopupAddCoursework.jsx
  */
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Button from '@mui/material/Button';
@@ -14,9 +14,21 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import * as React from 'react';
+import { useState } from 'react';
 import { FormGrid, VisuallyHiddenInput } from '../../style/formStyle';
 
 const PopupAddCoursework = ({ open, handlePopupClose }) => {
+  const [selectedFile, setSelectedFile] = useState();
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
   const handleClose = () => {
     handlePopupClose && handlePopupClose();
   };
@@ -39,7 +51,7 @@ const PopupAddCoursework = ({ open, handlePopupClose }) => {
               startIcon={<CloudUploadIcon />}
             >
               Upload file
-              <VisuallyHiddenInput type="file" />
+              <VisuallyHiddenInput type="file" onChange={handleFileChange} />
             </Button>
             <FormControlLabel
               control={<Checkbox defaultChecked />}
@@ -49,7 +61,7 @@ const PopupAddCoursework = ({ open, handlePopupClose }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} autoFocus variant="contained">
+          <Button onClick={handleUpload} autoFocus variant="contained">
             Add
           </Button>
         </DialogActions>
