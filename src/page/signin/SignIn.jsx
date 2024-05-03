@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 13:14:26
+ * @LastEditTime: 2024-05-03 10:16:16
  * @FilePath: /csc8019_team_project_frontend/src/page/signin/SignIn.jsx
  */
 
@@ -20,6 +20,7 @@ import { ThemeProvider } from '@mui/material/styles';
 // Customize
 import Copyright from '../../common/Copyright';
 import SignInForm from '../../components/SignInForm';
+import { parseJwt } from '../../helpers/jwt';
 import theme from '../../style/theme';
 
 const SignIn = () => {
@@ -40,7 +41,12 @@ const SignIn = () => {
       // save accessToken in Local Storage
       localStorage.setItem('accessToken', accessToken);
       setToken(accessToken);
-      window.location.href = '/modules';
+      const userType = parseJwt(accessToken).userType;
+      if (userType === 'student') {
+        window.location.href = '/modules';
+      } else {
+        window.location.href = '/staff/modules';
+      }
     } catch (error) {
       console.error('Login failed', error);
     }
