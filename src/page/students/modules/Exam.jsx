@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-22 22:20:01
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 13:13:50
+ * @LastEditTime: 2024-05-03 01:22:32
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/Exam.jsx
  */
 
@@ -49,18 +49,11 @@ const Exam = () => {
     } catch (error) {
       console.error('Error fetching student modules:', error);
     }
-  }, []);
+  }, [moduleId, examId]);
 
   useEffect(() => {
     fetchExamDetails();
   }, [fetchExamDetails]);
-
-  const examDetails = {
-    date: '11/05/2024 13:00',
-    description:
-      'Basic principles of concurrent programming. Thread synchronisation mechanisms. Challenges of concurrent programming such as interference and deadlocks. ',
-    examLink: '',
-  };
 
   return (
     <ThemeProvider theme={theme}>
