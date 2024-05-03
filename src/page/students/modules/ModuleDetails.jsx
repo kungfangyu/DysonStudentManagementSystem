@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 14:27:26
+ * @LastEditTime: 2024-05-03 03:01:52
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleDetails.jsx
  */
 import * as React from 'react';
@@ -28,7 +28,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
-import { getModuleAnnouncements } from '../../../api/modules';
+import { getModuleAnnouncements, getModuleDetails } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
@@ -38,8 +38,8 @@ import theme from '../../../style/theme';
 
 const ModuleDetails = () => {
   const { moduleId } = useParams();
-
   const [announce, setAnnounce] = useState([]);
+  const [moduleDetails, setModuleDetails] = useState([]);
 
   const fetchModuleAnnouncements = useCallback(async () => {
     try {
@@ -47,7 +47,6 @@ const ModuleDetails = () => {
       if (token) {
         const response = await getModuleAnnouncements(moduleId);
         const results = response;
-        console.log('🚀 ~ fetchModuleAnnouncements ~ response:', response);
         setAnnounce(results);
       } else {
         window.location.href = SIGNIN_URL;
@@ -55,7 +54,22 @@ const ModuleDetails = () => {
     } catch (error) {
       console.error('Error fetching student modules:', error);
     }
-  }, []);
+  }, [moduleId]);
+
+  const fetchModuleDetails = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getModuleDetails(moduleId);
+        const results = response;
+        setModuleDetails(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
 
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
@@ -64,38 +78,30 @@ const ModuleDetails = () => {
 
   useEffect(() => {
     fetchModuleAnnouncements();
-  }, [fetchModuleAnnouncements]);
+    fetchModuleDetails();
+  }, [fetchModuleAnnouncements, fetchModuleDetails]);
 
-  const moduleDetails = {
-    moduleId: '01',
-    moduleName: 'CSC8019 Advance Java',
-    moduleIntroduction:
-      'Module Introductions Module Introductions Module Introductions Module Introductions Module Introductions Module IntroductionsModule Introductions',
-    moduleSyllabus:
-      'Basic principles of concurrent programming. Thread synchronisation mechanisms. Challenges of concurrent programming such as interference and deadlocks. Concurrent programming synchronisation problems: Producer/Consumer problem, Readers/Writers problem. See the syllabus for information aboutthe module leader and other staff, contact hours, learning outcomes and assessments.',
-    announcement: [
-      { announcement: 'Module announcements', postedTime: '09/04/2024' },
-      { announcement: 'Module announcements', postedTime: '10/04/2024' },
-      { announcement: 'Module announcements', postedTime: '13/04/2024' },
-    ],
-    relatedLink: [
-      {
-        title: 'Materials',
-        link: `/${moduleId}/materials`,
-        image: '/images/moduleMaterial.jpg',
-      },
-      {
-        title: 'Assignments and Exams',
-        link: `/${moduleId}/assignmentandexam`,
-        image: '/images/moduleMaterial.jpg',
-      },
-    ],
-  };
+  const relatedLink = [
+    {
+      title: 'Materials',
+      link: `/${moduleId}/materials`,
+      image: '/images/moduleMaterial.jpg',
+    },
+    {
+      title: 'Assignments and Exams',
+      link: `/${moduleId}/assignmentandexam`,
+      image: '/images/moduleMaterial.jpg',
+    },
+  ];
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav open={open} toggleDrawer={toggleDrawer} title={moduleId} />
+        <Nav
+          open={open}
+          toggleDrawer={toggleDrawer}
+          title={`${moduleId} - ${moduleDetails.moduleName}`}
+        />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -148,26 +154,43 @@ const ModuleDetails = () => {
 
             <Box>
               <h2>Welcome to {moduleDetails.moduleName}</h2>
+
               <Typography
                 variant="body1"
                 color="initial"
-                sx={{ padding: '0 16px' }}
+                sx={{ padding: '0 16px', mt: 2 }}
               >
-                {moduleDetails.moduleIntroduction}
+                {moduleDetails.moduleDescription}
               </Typography>
             </Box>
             <Box>
-              <h2>Syllabus</h2>
+              <h2>About Course</h2>
               <Typography
                 variant="body1"
                 color="initial"
                 sx={{ padding: '0 16px' }}
               >
-                {moduleDetails.moduleSyllabus}
+                Module Period: {moduleDetails.startDate} -{' '}
+                {moduleDetails.endDate}
+              </Typography>
+              <Typography
+                variant="body1"
+                color="initial"
+                sx={{ padding: '0 16px' }}
+              >
+                Credits: {moduleDetails.moduleCredits}
+              </Typography>
+              <h2>Module Leader</h2>
+              <Typography
+                variant="body1"
+                color="initial"
+                sx={{ padding: '0 16px' }}
+              >
+                John Smith - JOSM@dyson.edu
               </Typography>
             </Box>
             <Grid container sx={{ justifyContent: 'space-around' }}>
-              {moduleDetails.relatedLink.map((items, index) => {
+              {relatedLink.map((items, index) => {
                 return (
                   <Link href={`${items.link}`} underline="none" key={index}>
                     <Card
