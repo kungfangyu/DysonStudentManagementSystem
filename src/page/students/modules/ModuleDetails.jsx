@@ -2,11 +2,11 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 01:38:02
+ * @LastEditTime: 2024-05-03 03:01:52
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleDetails.jsx
  */
 import * as React from 'react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -28,50 +28,80 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
+import { getModuleAnnouncements, getModuleDetails } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import { SIGNIN_URL } from '../../../data/data';
 import theme from '../../../style/theme';
 
 const ModuleDetails = () => {
   const { moduleId } = useParams();
+  const [announce, setAnnounce] = useState([]);
+  const [moduleDetails, setModuleDetails] = useState([]);
+
+  const fetchModuleAnnouncements = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getModuleAnnouncements(moduleId);
+        const results = response;
+        setAnnounce(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
+
+  const fetchModuleDetails = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getModuleDetails(moduleId);
+        const results = response;
+        setModuleDetails(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
 
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const moduleDetails = {
-    moduleId: '01',
-    moduleName: 'CSC8019 Advance Java',
-    moduleIntroduction:
-      'Module Introductions Module Introductions Module Introductions Module Introductions Module Introductions Module IntroductionsModule Introductions',
-    moduleSyllabus:
-      'Basic principles of concurrent programming. Thread synchronisation mechanisms. Challenges of concurrent programming such as interference and deadlocks. Concurrent programming synchronisation problems: Producer/Consumer problem, Readers/Writers problem. See the syllabus for information aboutthe module leader and other staff, contact hours, learning outcomes and assessments.',
-    announcement: [
-      { announcement: 'Module announcements', postedTime: '09/04/2024' },
-      { announcement: 'Module announcements', postedTime: '10/04/2024' },
-      { announcement: 'Module announcements', postedTime: '13/04/2024' },
-    ],
-    relatedLink: [
-      {
-        title: 'Materials',
-        link: `/${moduleId}/materials`,
-        image: '/images/moduleMaterial.jpg',
-      },
-      {
-        title: 'Assignments and Exams',
-        link: `/${moduleId}/assignmentandexam`,
-        image: '/images/moduleMaterial.jpg',
-      },
-    ],
-  };
+  useEffect(() => {
+    fetchModuleAnnouncements();
+    fetchModuleDetails();
+  }, [fetchModuleAnnouncements, fetchModuleDetails]);
+
+  const relatedLink = [
+    {
+      title: 'Materials',
+      link: `/${moduleId}/materials`,
+      image: '/images/moduleMaterial.jpg',
+    },
+    {
+      title: 'Assignments and Exams',
+      link: `/${moduleId}/assignmentandexam`,
+      image: '/images/moduleMaterial.jpg',
+    },
+  ];
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav open={open} toggleDrawer={toggleDrawer} title={'ModuleName'} />
+        <Nav
+          open={open}
+          toggleDrawer={toggleDrawer}
+          title={`${moduleId} - ${moduleDetails.moduleName}`}
+        />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -103,44 +133,64 @@ const ModuleDetails = () => {
             }}
           >
             <h2>Recent Announcements</h2>
-            {moduleDetails.announcement.map((items, index) => {
+            {announce.map((items, index) => {
               return (
-                <List
-                  sx={{ width: '100%', maxWidth: 360, padding: 0 }}
-                  key={index}
-                >
-                  <ListItem>
-                    <ListItemText
-                      primary={items.announcement}
-                      secondary={items.postedTime}
-                    />
-                  </ListItem>
-                </List>
+                <>
+                  <List
+                    sx={{ width: '100%', maxWidth: 'auto', padding: 0 }}
+                    key={index}
+                  >
+                    <ListItem>
+                      <ListItemText
+                        primary={`${items.title} - ${items.description}`}
+                        secondary={`Posted: ${items.datePosted}`}
+                      />
+                    </ListItem>
+                  </List>
+                  <Divider />
+                </>
               );
             })}
 
             <Box>
               <h2>Welcome to {moduleDetails.moduleName}</h2>
+
               <Typography
                 variant="body1"
                 color="initial"
-                sx={{ padding: '0 16px' }}
+                sx={{ padding: '0 16px', mt: 2 }}
               >
-                {moduleDetails.moduleIntroduction}
+                {moduleDetails.moduleDescription}
               </Typography>
             </Box>
             <Box>
-              <h2>Syllabus</h2>
+              <h2>About Course</h2>
               <Typography
                 variant="body1"
                 color="initial"
                 sx={{ padding: '0 16px' }}
               >
-                {moduleDetails.moduleSyllabus}
+                Module Period: {moduleDetails.startDate} -{' '}
+                {moduleDetails.endDate}
+              </Typography>
+              <Typography
+                variant="body1"
+                color="initial"
+                sx={{ padding: '0 16px' }}
+              >
+                Credits: {moduleDetails.moduleCredits}
+              </Typography>
+              <h2>Module Leader</h2>
+              <Typography
+                variant="body1"
+                color="initial"
+                sx={{ padding: '0 16px' }}
+              >
+                John Smith - JOSM@dyson.edu
               </Typography>
             </Box>
             <Grid container sx={{ justifyContent: 'space-around' }}>
-              {moduleDetails.relatedLink.map((items, index) => {
+              {relatedLink.map((items, index) => {
                 return (
                   <Link href={`${items.link}`} underline="none" key={index}>
                     <Card

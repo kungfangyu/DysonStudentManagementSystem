@@ -48,3 +48,17 @@ export const getExamsDetails = async (moduleID, examID) => {
     method: 'get',
   });
 };
+
+export const getModuleAnnouncements = async (moduleID) => {
+  return await service({
+    url: `/moduleAnnouncement/${moduleID}`,
+    method: 'get',
+  });
+};
+
+export const getModuleDetails = async (moduleID) => {
+  return await service({
+    url: `/moduleDetails/${moduleID}`,
+    method: 'get',
+  });
+};

@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-22 22:20:01
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 13:09:18
+ * @LastEditTime: 2024-05-03 01:22:59
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/Assignment.jsx
  */
 
@@ -48,7 +48,7 @@ const Assignment = () => {
     } catch (error) {
       console.error('Error fetching student modules:', error);
     }
-  }, []);
+  }, [moduleId, courseworkId]);
 
   useEffect(() => {
     fetchCourseworkDetails();

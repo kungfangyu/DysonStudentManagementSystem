@@ -12,11 +12,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
-import {
-  getUserEmergencyData,
-  getUserPrimaryData,
-  getUserSecondaryData,
-} from '../api/user';
+import { getUserEmergencyData, getUserPrimaryData } from '../api/user';
 import { SIGNIN_URL } from '../data/data';
 import { parseJwt } from '../helpers/jwt';
 import { FormGrid } from '../style/formStyle';
@@ -36,7 +32,6 @@ const UserInfoForm = () => {
 
   //Emergency Contact
   const [eTitle, setETitle] = useState([]);
-
   const [emergencyContact, setEmergencyContact] = useState([]);
 
   const fetchPrimaryData = useCallback(async () => {
@@ -45,28 +40,21 @@ const UserInfoForm = () => {
       if (token) {
         const parseToken = parseJwt(token);
         const response = await getUserPrimaryData(parseToken.userID);
-        const { firstName, lastName, personalEmail, dysonEmail, phone } =
-          response;
+        const {
+          firstName,
+          lastName,
+          personalEmail,
+          dysonEmail,
+          phone,
+          middleNames,
+          postcode,
+          address,
+        } = response;
         setFirstName(firstName);
         setLastName(lastName);
         setDysonEmail(dysonEmail);
         setPersonalEmail(personalEmail);
         setPhone(phone);
-      } else {
-        window.location.href = SIGNIN_URL;
-      }
-    } catch (error) {
-      console.error('Error fetchPrimaryData:', error);
-    }
-  }, []);
-
-  const fetchSecondaryData = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const parseToken = parseJwt(token);
-        const response = await getUserSecondaryData(parseToken.userID);
-        const { middleNames, postcode, address } = response;
         setMiddleName(middleNames);
         setAddress(address);
         setPostcode(postcode);
@@ -95,9 +83,8 @@ const UserInfoForm = () => {
 
   useEffect(() => {
     fetchPrimaryData();
-    fetchSecondaryData();
     fetchEmergencyData();
-  }, [fetchPrimaryData, fetchSecondaryData, fetchEmergencyData]);
+  }, [fetchPrimaryData, fetchEmergencyData]);
 
   const handleEmergencyTitleChange = (event) => {
     setETitle(event.target.value);
@@ -245,6 +232,11 @@ const UserInfoForm = () => {
           </FormGrid>
         </Grid>
       </Container>
+      <Box sx={{ textAlign: 'center' }}>
+        <Button variant="contained" endIcon={<SendIcon />} size="large">
+          Update
+        </Button>
+      </Box>
 
       {/*  Emergency Contact Start-------------------------------------*/}
       <Container>
@@ -385,7 +377,7 @@ const UserInfoForm = () => {
       </Container>
       <Box sx={{ textAlign: 'center' }}>
         <Button variant="contained" endIcon={<SendIcon />} size="large">
-          Send
+          Update
         </Button>
       </Box>
       {/*  Emergency Contact End-------------------------------------*/}
