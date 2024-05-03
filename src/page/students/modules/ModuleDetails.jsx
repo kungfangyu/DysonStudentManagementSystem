@@ -2,11 +2,11 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-05 06:45:24
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 01:38:02
+ * @LastEditTime: 2024-05-02 14:27:26
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleDetails.jsx
  */
 import * as React from 'react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -28,19 +28,43 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 
+import { getModuleAnnouncements } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import { SIGNIN_URL } from '../../../data/data';
 import theme from '../../../style/theme';
 
 const ModuleDetails = () => {
   const { moduleId } = useParams();
 
+  const [announce, setAnnounce] = useState([]);
+
+  const fetchModuleAnnouncements = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getModuleAnnouncements(moduleId);
+        const results = response;
+        console.log('🚀 ~ fetchModuleAnnouncements ~ response:', response);
+        setAnnounce(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, []);
+
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    fetchModuleAnnouncements();
+  }, [fetchModuleAnnouncements]);
 
   const moduleDetails = {
     moduleId: '01',
@@ -71,7 +95,7 @@ const ModuleDetails = () => {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav open={open} toggleDrawer={toggleDrawer} title={'ModuleName'} />
+        <Nav open={open} toggleDrawer={toggleDrawer} title={moduleId} />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -103,19 +127,22 @@ const ModuleDetails = () => {
             }}
           >
             <h2>Recent Announcements</h2>
-            {moduleDetails.announcement.map((items, index) => {
+            {announce.map((items, index) => {
               return (
-                <List
-                  sx={{ width: '100%', maxWidth: 360, padding: 0 }}
-                  key={index}
-                >
-                  <ListItem>
-                    <ListItemText
-                      primary={items.announcement}
-                      secondary={items.postedTime}
-                    />
-                  </ListItem>
-                </List>
+                <>
+                  <List
+                    sx={{ width: '100%', maxWidth: 'auto', padding: 0 }}
+                    key={index}
+                  >
+                    <ListItem>
+                      <ListItemText
+                        primary={`${items.title} - ${items.description}`}
+                        secondary={`Posted: ${items.datePosted}`}
+                      />
+                    </ListItem>
+                  </List>
+                  <Divider />
+                </>
               );
             })}
 
