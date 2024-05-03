@@ -14,6 +14,14 @@ export const getStudentModules = async (studentID) => {
   });
 };
 
+export const getStaffModules = async (staffID) => {
+  return await service({
+    url: `moduleStaff/getModulesDetailsByStaffID/${staffID}`,
+    method: 'get',
+  });
+};
+
+
 export const getCourseworks = async (moduleID) => {
   return await service({
     url: `/Coursework/${moduleID}`,

@@ -6,6 +6,7 @@
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/modules/StaffModuleList.jsx
  */
 import * as React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Box from '@mui/material/Box';
@@ -15,12 +16,14 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-
+import { getStaffModules } from '../../../api/modules'; 
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
 import ModuleCard from '../../../components/modules/ModuleCard';
+import { SIGNIN_URL } from '../../../data/data';
+import { parseJwt } from '../../../helpers/jwt';
 import theme from '../../../style/theme';
 
 const moduleData = [
@@ -75,10 +78,32 @@ const moduleData = [
 ];
 
 const StaffModuleList = () => {
+  const [moduleData, setModuleData] = useState([]);
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  const fetchStaffModules = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const response = await getStaffModules(parseToken.userID);
+        const results = response;
+        console.log(results);
+        setModuleData(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching staff modules:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStaffModules();
+  }, [fetchStaffModules]);
 
   return (
     <ThemeProvider theme={theme}>
