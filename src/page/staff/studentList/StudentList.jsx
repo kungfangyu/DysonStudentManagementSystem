@@ -2,10 +2,10 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 13:47:36
+ * @LastEditTime: 2024-05-03 12:57:54
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/studentList/StudentList.jsx
  */
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Box from '@mui/material/Box';
@@ -20,28 +20,55 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-
+import { getStaffModules } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
 import StudentListTable from '../../../components/StudentListTable';
+import { SIGNIN_URL } from '../../../data/data';
+import { parseJwt } from '../../../helpers/jwt';
 import { FormGrid } from '../../../style/formStyle';
 import theme from '../../../style/theme';
 
 const StudentList = () => {
   const [open, setOpen] = useState(true);
-  const [module, setModule] = useState([]);
+  const [modules, setModules] = useState([]);
+  const [selectedModule, setSelectedModule] = useState('');
+  const [selectedModuleName, setSelectedModuleName] = useState('');
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   const handleModuleChange = (event) => {
-    setModule(event.target.value);
+    const selectedModule = modules.find(
+      (module) => module.moduleID === event.target.value,
+    );
+    setSelectedModule(selectedModule.moduleID);
+    setSelectedModuleName(selectedModule.moduleName);
   };
+  const fetchModules = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const response = await getStaffModules(parseToken.userID);
+        setModules(Object.values(response));
+        if (response.length > 0) {
+          setSelectedModule(response[0].moduleName);
+        }
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching modules:', error);
+    }
+  }, []);
 
-  const moduleSelect = ['CSC8019', 'CSC8015', 'CSC8014', 'CSC8022'];
+  useEffect(() => {
+    fetchModules();
+  }, [fetchModules]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -83,25 +110,26 @@ const StudentList = () => {
                 <FormLabel htmlFor="module">Modules Name</FormLabel>
                 <Select
                   displayEmpty
-                  value={module}
+                  value={selectedModule}
                   onChange={handleModuleChange}
                   input={<OutlinedInput />}
                   renderValue={(selected) => {
-                    if (selected.length === 0) {
+                    if (!selected || selected === '') {
                       return <em>Select Module</em>;
                     }
-                    return selected;
+                    return selectedModule + '-' + selectedModuleName;
                   }}
                   sx={{
                     mt: 2,
                   }}
                   inputProps={{ 'aria-label': 'Without label' }}
                 >
-                  {moduleSelect.map((title) => (
-                    <MenuItem key={title} value={title}>
-                      {title}
-                    </MenuItem>
-                  ))}
+                  {modules &&
+                    modules.map((module) => (
+                      <MenuItem key={module.moduleID} value={module.moduleID}>
+                        {module.moduleID} - {module.moduleName}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormGrid>
             </Grid>
