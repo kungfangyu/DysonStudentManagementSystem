@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-05-01 13:45:32
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 14:30:11
+ * @LastEditTime: 2024-05-04 16:43:13
  * @FilePath: /csc8019_team_project_frontend/src/components/StudentListTable.jsx
  */
 import React from 'react';
@@ -20,7 +20,7 @@ import TableRow from '@mui/material/TableRow';
 import { getStatusColor } from '../helpers/helperFunction';
 import { StyledTableCell, StyledTableRow } from '../style/tableStyle';
 
-const StudentListTable = () => {
+const StudentListTable = ({ studentList }) => {
   const studentData = [
     {
       id: 'STU001',
@@ -30,6 +30,7 @@ const StudentListTable = () => {
       programmeName: 'Advanced Java',
       status: 'enrolled',
       detailLink: '/modules/CSC8019',
+      tutor: 'Mr. John',
     },
     {
       id: 'STU002',
@@ -39,6 +40,7 @@ const StudentListTable = () => {
       programmeName: 'Advanced Java',
       status: 'enrolled',
       detailLink: '/modules/CSC8012',
+      tutor: 'Dr. Lee',
     },
     {
       id: 'STU003',
@@ -48,6 +50,7 @@ const StudentListTable = () => {
       programmeName: 'Advanced Java',
       status: 'withdraw',
       detailLink: '/modules/CSC8022',
+      tutor: 'Dr. Lee',
     },
     {
       id: 'STU004',
@@ -57,6 +60,7 @@ const StudentListTable = () => {
       programmeName: 'Advanced Java',
       status: 'suspended',
       detailLink: '/modules/CSC8015',
+      tutor: 'Dr. Dan',
     },
   ];
 
@@ -70,19 +74,22 @@ const StudentListTable = () => {
               <StyledTableCell align="left">Student Name</StyledTableCell>
               <StyledTableCell align="left">Email</StyledTableCell>
               <StyledTableCell align="left">Grade</StyledTableCell>
+              <StyledTableCell align="left">Tutor</StyledTableCell>
               <StyledTableCell align="left">Status</StyledTableCell>
               <StyledTableCell align="right">Details</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {studentData.map((row) => (
-              <StyledTableRow key={row.id}>
+            {studentList.map((row) => (
+              <StyledTableRow key={row.studentId}>
                 <StyledTableCell component="th" scope="row">
-                  {row.id}
+                  {row.studentId}
                 </StyledTableCell>
                 <StyledTableCell align="left">{row.name}</StyledTableCell>
                 <StyledTableCell align="left">{row.email}</StyledTableCell>
                 <StyledTableCell align="left">{row.grade}</StyledTableCell>
+                <StyledTableCell align="left">{row.tutor}</StyledTableCell>
+
                 <StyledTableCell align="left">
                   <Chip
                     label={row.status}
