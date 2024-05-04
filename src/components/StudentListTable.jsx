@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-05-01 13:45:32
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-03 11:27:02
+ * @LastEditTime: 2024-05-04 16:43:13
  * @FilePath: /csc8019_team_project_frontend/src/components/StudentListTable.jsx
  */
 import React from 'react';
@@ -20,7 +20,7 @@ import TableRow from '@mui/material/TableRow';
 import { getStatusColor } from '../helpers/helperFunction';
 import { StyledTableCell, StyledTableRow } from '../style/tableStyle';
 
-const StudentListTable = () => {
+const StudentListTable = ({ studentList }) => {
   const studentData = [
     {
       id: 'STU001',
@@ -80,10 +80,10 @@ const StudentListTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {studentData.map((row) => (
-              <StyledTableRow key={row.id}>
+            {studentList.map((row) => (
+              <StyledTableRow key={row.studentId}>
                 <StyledTableCell component="th" scope="row">
-                  {row.id}
+                  {row.studentId}
                 </StyledTableCell>
                 <StyledTableCell align="left">{row.name}</StyledTableCell>
                 <StyledTableCell align="left">{row.email}</StyledTableCell>

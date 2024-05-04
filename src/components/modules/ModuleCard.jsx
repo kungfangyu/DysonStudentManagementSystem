@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 21:37:20
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 13:37:35
+ * @LastEditTime: 2024-05-04 15:34:43
  * @FilePath: /csc8019_team_project_frontend/src/components/modules/ModuleCard.jsx
  */
 import { CardActionArea } from '@mui/material';
@@ -20,7 +20,7 @@ const ModuleCard = ({ moduleData }) => {
       {moduleData.map((items) => {
         return (
           <Link
-            href={`/modules/${items.moduleID}`}
+            href={`modules/${items.moduleID}`}
             underline="none"
             key={items.moduleID}
           >

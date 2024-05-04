@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-03 12:57:54
+ * @LastEditTime: 2024-05-04 18:07:31
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/studentList/StudentList.jsx
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -21,6 +21,7 @@ import Select from '@mui/material/Select';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
 import { getStaffModules } from '../../../api/modules';
+import { getStudentList } from '../../../api/studentList';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
@@ -35,40 +36,68 @@ const StudentList = () => {
   const [open, setOpen] = useState(true);
   const [modules, setModules] = useState([]);
   const [selectedModule, setSelectedModule] = useState('');
+
   const [selectedModuleName, setSelectedModuleName] = useState('');
+
+  const [studentList, setStudentList] = useState([]);
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   const handleModuleChange = (event) => {
+    const selectedModuleId = event.target.value;
     const selectedModule = modules.find(
-      (module) => module.moduleID === event.target.value,
+      (module) => module.moduleID === selectedModuleId,
     );
-    setSelectedModule(selectedModule.moduleID);
+    setSelectedModule(selectedModuleId);
     setSelectedModuleName(selectedModule.moduleName);
+    fetchStudentList(selectedModuleId);
   };
-  const fetchModules = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const parseToken = parseJwt(token);
-        const response = await getStaffModules(parseToken.userID);
-        setModules(Object.values(response));
-        if (response.length > 0) {
-          setSelectedModule(response[0].moduleName);
+
+  const fetchStudentList = useCallback(
+    async (moduleId) => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (token && moduleId !== '') {
+          const response = await getStudentList(moduleId);
+          setStudentList(response);
+        } else {
+          window.location.href = SIGNIN_URL;
         }
-      } else {
-        window.location.href = SIGNIN_URL;
+      } catch (error) {
+        console.error('Error fetching modules:', error);
       }
-    } catch (error) {
-      console.error('Error fetching modules:', error);
-    }
-  }, []);
+    },
+    [selectedModule],
+  );
 
   useEffect(() => {
-    fetchModules();
-  }, [fetchModules]);
+    // fetch default module and student list
+    const fetchDefaultModule = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          const parseToken = parseJwt(token);
+          const response = await getStaffModules(parseToken.userID);
+          const moduleArray = Object.values(response);
+          if (moduleArray.length > 0) {
+            const defaultModuleId = moduleArray[0].moduleID;
+            setSelectedModule(defaultModuleId);
+            setSelectedModuleName(moduleArray[0].moduleName);
+            await fetchStudentList(defaultModuleId);
+          }
+          setModules(moduleArray);
+        } else {
+          window.location.href = SIGNIN_URL;
+        }
+      } catch (error) {
+        console.error('Error fetching modules:', error);
+      }
+    };
+
+    fetchDefaultModule();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -140,17 +169,13 @@ const StudentList = () => {
                 mt: 4,
               }}
             >
-              <StudentListTable />
+              <StudentListTable studentList={studentList} />
             </Grid>
           </Container>
 
           <Copyright sx={{ pt: 4, pb: 4 }} />
         </Box>
       </Box>
-      {/* <PopupExtensions
-        open={popupOpen}
-        handlePopupExtensionsClose={handlePopupExtensionsClose}
-      /> */}
     </ThemeProvider>
   );
 };
