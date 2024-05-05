@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-30 17:48:02
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-03 10:01:41
+ * @LastEditTime: 2024-05-05 20:01:20
  * @FilePath: /csc8019_team_project_frontend/src/api/modules.js
  */
 import service from './axios';
@@ -53,6 +53,14 @@ export const getModuleAnnouncements = async (moduleID) => {
   return await service({
     url: `/moduleAnnouncement/${moduleID}`,
     method: 'get',
+  });
+};
+
+export const postModuleAnnouncement = async (announcement) => {
+  return await service({
+    url: `/moduleAnnouncement`,
+    method: 'post',
+    data: announcement,
   });
 };
 

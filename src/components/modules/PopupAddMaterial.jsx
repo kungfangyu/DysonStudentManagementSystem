@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 22:58:28
- * @FilePath: /csc8019_team_project_frontend/src/components/PopupAddMaterial.jsx
+ * @LastEditTime: 2024-05-05 20:35:16
+ * @FilePath: /csc8019_team_project_frontend/src/components/modules/PopupAddMaterial.jsx
  */
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Button from '@mui/material/Button';
@@ -14,9 +14,40 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import * as React from 'react';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { uploadFile } from '../../api/fileUpload';
 import { FormGrid, VisuallyHiddenInput } from '../../style/formStyle';
 
 const PopupAddMaterial = ({ open, handlePopupClose }) => {
+  const { moduleId } = useParams();
+  const [selectedFile, setSelectedFile] = useState();
+  const [fileName, setFileName] = useState('');
+  const filepath = `module/${moduleId}/material`;
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      console.error('No file selected');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    try {
+      const response = await uploadFile(selectedFile, filepath);
+      setFileName(response.data.fileName);
+      handleClose();
+    } catch (error) {
+      console.log('Error uploading file');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setFileName(file.name);
+    }
+  };
+
   const handleClose = () => {
     handlePopupClose && handlePopupClose();
   };
@@ -41,8 +72,10 @@ const PopupAddMaterial = ({ open, handlePopupClose }) => {
               startIcon={<CloudUploadIcon />}
             >
               Upload file
-              <VisuallyHiddenInput type="file" />
+              <VisuallyHiddenInput type="file" onChange={handleFileChange} />
             </Button>
+            {fileName && <p>Selected file: {fileName}</p>}
+
             <FormControlLabel
               control={<Checkbox defaultChecked />}
               label="Publish"
@@ -51,7 +84,7 @@ const PopupAddMaterial = ({ open, handlePopupClose }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} autoFocus variant="contained">
+          <Button onClick={handleUpload} autoFocus variant="contained">
             Add
           </Button>
         </DialogActions>
