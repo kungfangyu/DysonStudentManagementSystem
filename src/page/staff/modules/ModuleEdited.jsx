@@ -2,9 +2,13 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-25 15:54:11
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 23:59:11
+ * @LastEditTime: 2024-05-05 20:26:36
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/modules/ModuleEdited.jsx
  */
+import * as React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -17,9 +21,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-import * as React from 'react';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
@@ -29,9 +31,11 @@ import PopupAddCoursework from '../../../components/modules/PopupAddCoursework';
 import PopupAddMaterial from '../../../components/modules/PopupAddMaterial';
 import PopupDeleteConfirm from '../../../components/modules/PopupDeleteConfirm';
 import PopupEditIntro from '../../../components/modules/PopupEditIntro';
-import PopupEditSyllabus from '../../../components/modules/PopupEditSyllabus';
 import { ModuleEditCardPaper } from '../../../style/cardStyle';
 import theme from '../../../style/theme';
+
+import { getModuleAnnouncements, getModuleDetails } from '../../../api/modules';
+import { SIGNIN_URL } from '../../../data/data';
 
 const ModuleEdited = () => {
   const { moduleId } = useParams();
@@ -40,12 +44,41 @@ const ModuleEdited = () => {
   const [popupAddMaterialOpen, setPopupAddMaterialOpen] = useState(false);
   const [popupAddCourseworkOpen, setPopupAddCourseworkOpen] = useState(false);
   const [popupEditIntro, setPopupEditIntro] = useState(false);
-  const [popupEditSyllabus, setPopupEditSyllabus] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false); // State to manage the visibility of the delete confirmation popup
-  const [deleteItemId, setDeleteItemId] = useState(null); // State to store the item ID for deletion
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [announce, setAnnounce] = useState([]);
+  const [description, setDescription] = useState('');
 
-  const [intro, setIntro] = useState('');
-  const [syllabus, setSyllabus] = useState('');
+  const fetchModuleAnnouncements = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const response = await getModuleAnnouncements(moduleId);
+        const results = response;
+        setAnnounce(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
+
+  const fetchModuleDetails = useCallback(async () => {
+    const token = localStorage.getItem('accessToken');
+
+    try {
+      if (token) {
+        const response = await getModuleDetails(moduleId);
+        const results = response;
+        setDescription(results.moduleDescription);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -67,16 +100,17 @@ const ModuleEdited = () => {
     setPopupEditIntro(true);
   };
 
-  const handleEditSyllabus = (moduleId) => {
-    setPopupEditSyllabus(true);
-  };
-
   const handleDelete = (itemId) => {
     // Here, you can implement the logic to delete the item with the specified ID
     console.log('Deleting item with ID:', itemId);
     // After deletion, close the delete confirmation popup
     setDeleteConfirmOpen(false);
   };
+
+  useEffect(() => {
+    fetchModuleDetails();
+    fetchModuleAnnouncements();
+  }, [fetchModuleAnnouncements, fetchModuleDetails]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -118,26 +152,35 @@ const ModuleEdited = () => {
             }}
           >
             <h3>Announcements List</h3>
-            <ModuleEditCardPaper>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography>Announcement 1</Typography>
-                <IconButton
-                  onClick={() => {
-                    setDeleteItemId(1);
-                    setDeleteConfirmOpen(true);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            </ModuleEditCardPaper>
+
+            {announce.map((item) => {
+              return (
+                <ModuleEditCardPaper key={item.announcementID}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography>
+                      {item.title}: {item.description}
+                    </Typography>
+                    <IconButton
+                      onClick={() => {
+                        setDeleteItemId(1);
+                        setDeleteConfirmOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                </ModuleEditCardPaper>
+              );
+            })}
+
             <IconButton
+              disabled={announce.length >= 3}
               color="primary"
               sx={{ mt: 1 }}
               aria-label="create a new announcement record"
@@ -161,33 +204,10 @@ const ModuleEdited = () => {
                   alignItems: 'center',
                 }}
               >
-                <Typography>{intro}</Typography>
+                <Typography>{description}</Typography>
 
                 <IconButton onClick={() => handleEditIntro(moduleId)}>
                   <EditIcon />
-                </IconButton>
-              </Box>
-            </ModuleEditCardPaper>
-          </Container>
-          <Container
-            sx={{
-              mb: 6,
-            }}
-          >
-            <h3>Module Syllabus</h3>
-            <ModuleEditCardPaper>
-              <Box
-                sx={{
-                  mt: 0,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography>{syllabus}</Typography>
-
-                <IconButton>
-                  <EditIcon onClick={() => handleEditSyllabus(moduleId)} />
                 </IconButton>
               </Box>
             </ModuleEditCardPaper>
@@ -273,19 +293,15 @@ const ModuleEdited = () => {
         </Box>
       </Box>
       <PopupAddAnnouncement
-        open={popupAddAnnounceOpen}
         moduleId={moduleId}
+        open={popupAddAnnounceOpen}
+        fetchModuleAnnouncements={fetchModuleAnnouncements}
         handlePopupClose={() => setPopupAddAnnounceOpen(false)}
       />
       <PopupEditIntro
         open={popupEditIntro}
         moduleId={moduleId}
         handlePopupClose={() => setPopupEditIntro(false)}
-      />
-      <PopupEditSyllabus
-        open={popupEditSyllabus}
-        moduleId={moduleId}
-        handlePopupClose={() => setPopupEditSyllabus(false)}
       />
       <PopupAddMaterial
         open={popupAddMaterialOpen}
