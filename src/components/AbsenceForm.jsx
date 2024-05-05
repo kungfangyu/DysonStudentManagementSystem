@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 17:03:00
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-22 10:54:07
+ * @LastEditTime: 2024-04-26 22:46:59
  * @FilePath: /csc8019_team_project_frontend/src/components/AbsenceForm.jsx
  */
 
@@ -21,7 +21,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
 import PopupBookingAndAbsence from '../components/PopupBookingAndAbsence';
-import FormGrid from '../style/formStyle';
+import { FormGrid } from '../style/formStyle';
 
 const AbsenceForm = () => {
   const [module, setModule] = useState([]);

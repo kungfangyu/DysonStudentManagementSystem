@@ -1,12 +1,11 @@
 /*
  * @Author: Fangyu Kung
- * @Date: 2024-03-15 14:01:15
+ * @Date: 2024-03-16 19:06:31
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 23:18:32
- * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleList.jsx
+ * @LastEditTime: 2024-05-02 00:14:12
+ * @FilePath: /csc8019_team_project_frontend/src/page/staff/timeTable/StaffTimeTable.jsx
  */
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Box from '@mui/material/Box';
@@ -16,48 +15,25 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-import { getStudentModules } from '../../../api/modules';
+
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
-import ModuleCard from '../../../components/modules/ModuleCard';
-import { SIGNIN_URL } from '../../../data/data';
-import { parseJwt } from '../../../helpers/jwt';
+import EditStaffTimeTables from '../../../components/EditStaffTimeTables';
+import EditStudentTimeTables from '../../../components/EditStudentTimeTables';
 import theme from '../../../style/theme';
 
-const ModuleList = () => {
-  const [moduleData, setModuleData] = useState([]);
-  const [open, setOpen] = useState(true);
+const StaffTimeTable = () => {
+  const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
-
-  const fetchStudentModules = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const parseToken = parseJwt(token);
-        const response = await getStudentModules(parseToken.userID);
-        const results = response;
-        setModuleData(results);
-      } else {
-        window.location.href = SIGNIN_URL;
-      }
-    } catch (error) {
-      console.error('Error fetching student modules:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchStudentModules();
-  }, [fetchStudentModules]);
-
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <Nav open={open} toggleDrawer={toggleDrawer} title={'Module List'} />
+        <Nav open={open} toggleDrawer={toggleDrawer} title={'TimeTable'} />
         <Aside variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -88,7 +64,15 @@ const ModuleList = () => {
               mb: 4,
             }}
           >
-            <ModuleCard moduleData={moduleData} />
+            <EditStaffTimeTables />
+          </Container>
+          <Container
+            sx={{
+              mt: 4,
+              mb: 4,
+            }}
+          >
+            <EditStudentTimeTables />
           </Container>
 
           <Copyright sx={{ pt: 4, pb: 4 }} />
@@ -98,4 +82,4 @@ const ModuleList = () => {
   );
 };
 
-export default ModuleList;
+export default StaffTimeTable;

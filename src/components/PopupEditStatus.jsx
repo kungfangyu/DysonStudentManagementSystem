@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-23 18:30:59
+ * @LastEditTime: 2024-05-01 14:17:58
  * @FilePath: /csc8019_team_project_frontend/src/components/PopupEditStatus.jsx
  */
 import Button from '@mui/material/Button';
@@ -17,25 +17,20 @@ import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 
-import { getStatusText } from '../helpers/helperFunction';
-import FormGrid from '../style/formStyle';
+import { FormGrid } from '../style/formStyle';
 
 const statusSelect = [
   {
-    name: 'Register',
-    value: 1,
+    value: 'register',
   },
   {
-    name: 'Enroll',
-    value: 2,
+    value: 'enrolled',
   },
   {
-    name: 'Suspend',
-    value: 3,
+    value: 'suspended',
   },
   {
-    name: 'Withdraw',
-    value: 4,
+    value: 'withdraw',
   },
 ];
 
@@ -70,7 +65,7 @@ const PopupEditStatus = ({
           <FormGrid item xs={12} md={6}>
             <Select
               displayEmpty
-              value={getStatusText(status)}
+              value={status}
               onChange={handleStatusChange}
               input={<OutlinedInput />}
               renderValue={(selected) => {
@@ -86,7 +81,7 @@ const PopupEditStatus = ({
             >
               {statusSelect.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
-                  {item.name}
+                  {item.value}
                 </MenuItem>
               ))}
             </Select>
