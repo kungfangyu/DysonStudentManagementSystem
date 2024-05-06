@@ -7,7 +7,7 @@
  */
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
@@ -21,36 +21,114 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
 import PopupBookingAndAbsence from '../components/PopupBookingAndAbsence';
+import { listModuleDetails } from '../api/ModuleDetailAPI';
+import { lessonByModuleID } from '../api/LessonDetails';
+import { createAbsenceRequest } from '../api/AbsenceRequest';
+import { parseJwt } from '../helpers/jwt';
 import { FormGrid } from '../style/formStyle';
 
 const AbsenceForm = () => {
-  const [module, setModule] = useState([]);
-  const [absenceTime, setAbsenceTime] = useState([]);
+  let [module, setModule] = useState([]);
+  let [absenceTime, setAbsenceTime] = useState([]);
+  let [selectedModuleName, setSelectedModuleName] = useState('');
+  let [selectedTime, setSelectedTime] = useState('');
+  let [selectedLesson, setSelectedLesson] = useState('');
+  let [absenceReason, setAbsenceReason] = useState('');
 
-  const [popupOpen, setPopupOpen] = useState(false);
+  let [userID, setUserId] = useState('');
 
-  const moduleSelect = ['CSC8019', 'CSC8015', 'CSC8014', 'CSC8022'];
-  const absenceTimeSelect = [
-    '2024-04-22 1330-1430',
-    '2024-04-22 1430-1530',
-    '2024-04-23 1330-1430',
-    '2024-04-23 1430-1530',
-  ];
+  useEffect(() => {
+    let token = localStorage.getItem('accessToken');
+    if (token) {
+      let parsedToken = parseJwt(token);
+      setUserId(parsedToken.userID);
+    }
+  }, []);
 
-  const handleModuleChange = (event) => {
-    setModule(event.target.value);
+  useEffect(() => {
+    listModuleDetails()
+      .then((response) => {
+        setModule(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedModuleName) {
+      lessonByModuleID(selectedModuleName)
+        .then((response) => {
+          setAbsenceTime(response.data); // Set absenceTime state
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      setAbsenceTime([]);
+    }
+  }, [selectedModuleName]);
+
+  useEffect(() => {
+    if (selectedTime) {
+      let lesson = absenceTime.find(function (time) {
+        return time.startTime === selectedTime;
+      });
+      if (!lesson) {
+        return;
+      }
+      setSelectedLesson(lesson.lessonID);
+    }
+  }, [selectedTime, absenceTime]);
+
+  let [popupOpen, setPopupOpen] = useState(false);
+
+  let handleReasonChange = (event) => {
+    let absenceReason;
+    absenceReason = event.target.value;
+    setAbsenceReason(absenceReason);
   };
 
-  const handleAbsenceTimeChange = (event) => {
-    setAbsenceTime(event.target.value);
+  let handleModuleChange = (event) => {
+    let selectedModuleID;
+    selectedModuleID = event.target.value;
+    let selectedModule;
+    selectedModule = module.find((m) => m.moduleID === selectedModuleID);
+    if (!selectedModule) {
+      setSelectedModuleName('');
+    } else {
+      setSelectedModuleName(selectedModuleID);
+    }
   };
 
-  const handlePopupConfirm = () => {
+  let handleAbsenceTimeChange = (event) => {
+    let selectedTime;
+    selectedTime = event.target.value;
+    setSelectedTime(selectedTime);
+  };
+
+  let handlePopupConfirm = () => {
     setPopupOpen(true);
+  };
+
+  let handleSubmit = () => {
+    let absenceRequestData = {
+      moduleID: selectedModuleName,
+      lessonID: selectedLesson,
+      studentID: userID,
+      requestReason: absenceReason,
+      requestStatus: 'submitted',
+    };
+    createAbsenceRequest(absenceRequestData)
+      .then(() => {})
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handlePopupConfirmClose = () => {
     setPopupOpen(false);
+    handleSubmit();
   };
 
   return (
@@ -63,7 +141,7 @@ const AbsenceForm = () => {
         space={2}
       >
         <Grid container spacing={1}>
-          <FormGrid item xs={12} md={6}>
+          <FormGrid item xs={12} md={5.5}>
             <FormLabel htmlFor="module">Modules Name</FormLabel>
             <Select
               displayEmpty
@@ -71,46 +149,56 @@ const AbsenceForm = () => {
               onChange={handleModuleChange}
               input={<OutlinedInput />}
               renderValue={(selected) => {
-                if (selected.length === 0) {
+                if (!selected) {
                   return <em>Select Module</em>;
                 }
-                return selected;
+                return selectedModuleName || <em>Select Module</em>;
               }}
               sx={{
                 mt: 2,
               }}
               inputProps={{ 'aria-label': 'Without label' }}
             >
-              {moduleSelect.map((title) => (
-                <MenuItem key={title} value={title}>
-                  {title}
+              <MenuItem value="">Select Module</MenuItem>
+              {module.map(function (mod) {
+                return (
+                  <MenuItem key={mod.moduleID} value={mod.moduleID}>
+                    {mod.moduleID}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormGrid>
+          <FormGrid item xs={12} md={5.5}>
+            <FormLabel htmlFor="absenceTime">Absence Time:</FormLabel>
+            <Select
+              displayEmpty
+              value={selectedTime}
+              onChange={handleAbsenceTimeChange}
+              input={<OutlinedInput />}
+              sx={{
+                mt: 2,
+              }}
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="">Select Time</MenuItem>
+              {absenceTime.map((time) => (
+                <MenuItem key={time.startTime} value={time.startTime}>
+                  {time.startTime}
                 </MenuItem>
               ))}
             </Select>
           </FormGrid>
-          <FormGrid item xs={12} md={6}>
-            <FormLabel htmlFor="absenceTime">Absence Time:</FormLabel>
+          <FormGrid item xs={12} md={1}>
+            <FormLabel htmlFor="absenceTime">LessonID:</FormLabel>
             <Select
               displayEmpty
-              value={absenceTime}
-              onChange={handleAbsenceTimeChange}
-              input={<OutlinedInput />}
-              renderValue={(selected) => {
-                if (selected.length === 0) {
-                  return <em>Select Time</em>;
-                }
-                return selected;
-              }}
-              sx={{
-                mt: 2,
-              }}
+              value={selectedLesson}
+              input={<OutlinedInput readOnly />} // Make the input read-only
+              sx={{ mt: 2 }}
               inputProps={{ 'aria-label': 'Without label' }}
             >
-              {absenceTimeSelect.map((title) => (
-                <MenuItem key={title} value={title}>
-                  {title}
-                </MenuItem>
-              ))}
+              <MenuItem value={selectedLesson}>{selectedLesson}</MenuItem>
             </Select>
           </FormGrid>
           <FormGrid item xs={12} sx={{ mt: 4 }}>
@@ -120,6 +208,8 @@ const AbsenceForm = () => {
               multiline
               rows={4}
               maxRows={4}
+              value={absenceReason}
+              onChange={handleReasonChange}
             />
           </FormGrid>
         </Grid>
