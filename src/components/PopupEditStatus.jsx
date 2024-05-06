@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 14:17:58
+ * @LastEditTime: 2024-05-06 15:18:28
  * @FilePath: /csc8019_team_project_frontend/src/components/PopupEditStatus.jsx
  */
 import Button from '@mui/material/Button';
@@ -21,9 +21,6 @@ import { FormGrid } from '../style/formStyle';
 
 const statusSelect = [
   {
-    value: 'register',
-  },
-  {
     value: 'enrolled',
   },
   {
@@ -34,12 +31,7 @@ const statusSelect = [
   },
 ];
 
-const PopupEditStatus = ({
-  open,
-  handlePopupEditClose,
-  initStatus,
-  moduleId,
-}) => {
+const PopupEditStatus = ({ open, handlePopupEditClose, initStatus }) => {
   const [status, setStatus] = useState(initStatus);
 
   const handleClose = () => {
