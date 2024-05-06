@@ -62,3 +62,16 @@ export const getModuleDetails = async (moduleID) => {
     method: 'get',
   });
 };
+
+export const createExtensionRequest = async (bodyData) => {
+    try {
+      return await service({
+        url: `/CourseworkExtensionRequest`,
+        method: 'post',
+        data: bodyData
+      });
+    } catch (error) {
+      console.error('Error creating extension request:', error);
+      throw error; // Re-throw the error for further handling if needed
+    }
+  };

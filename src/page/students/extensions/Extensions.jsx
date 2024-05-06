@@ -2,12 +2,13 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 22:46:32
+ * @LastEditTime: 2024-04-15 16:57:29
  * @FilePath: /csc8019_team_project_frontend/src/page/students/extensions/Extensions.jsx
  */
 import dayjs from 'dayjs';
 import * as React from 'react';
-import { useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
+import axios from 'axios';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import SendIcon from '@mui/icons-material/Send';
@@ -31,49 +32,134 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
+import { getAssignmentList } from '../../../api/assignmentList';
+import { getStudentModules, createExtensionRequest } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import { parseJwt } from '../../../helpers/jwt';
 import { FormGrid } from '../../../style/formStyle';
 import theme from '../../../style/theme';
+import { SIGNIN_URL } from '../../../data/data';
 
 import PopupExtensions from '../../../components/PopupExtensions';
 
 const Extensions = () => {
   const [open, setOpen] = useState(true);
   const [module, setModule] = useState([]);
+  const [selectedModule, setSelectedModule] = useState('');
+  const [selectedModuleName, setSelectedModuleName] = useState('');
+
+  const [selectedAssignment, setSelectedAssignment] = useState('');
   const [assignment, setAssignment] = useState([]);
+
+  const [reason, setReason] = useState('');
+
   const [startDate, setStartDate] = useState(dayjs(Date.now()));
   const [endDate, setEndDate] = useState(dayjs(Date.now()));
   const [popupOpen, setPopupOpen] = useState(false);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   const handleModuleChange = (event) => {
-    setModule(event.target.value);
+    const selectedModuleId = event.target.value;
+    const selectedModule = module.find(
+      (module) => module.moduleID === selectedModuleId,
+    );
+    setSelectedModule(selectedModuleId);
+    setSelectedModuleName(selectedModule.moduleName);
+    fetchAssignmentList(selectedModuleId);
   };
 
   const handleAssignmentChange = (event) => {
-    setAssignment(event.target.value);
+    const selectedAssignmentId = event.target.value;
+    const selectedAssignment = assignment.find(
+      (assignment) => assignment.courseworkID === selectedAssignmentId,
+    );
+    setSelectedAssignment(selectedAssignmentId);
   };
 
   const handlePopupExtensions = () => {
     setPopupOpen(true);
   };
 
+  const handlePopUpExtensionsSubmit = async () => {
+    try {
+      const bodyData = {
+        studentID: parseJwt(localStorage.getItem('accessToken')).userID,
+        moduleID: selectedModule,
+        courseworkID: selectedAssignment,
+        requestNumber: 1,
+        requestDate: new Date(Date.now()).toISOString(),
+        requestReason: reason,
+        status: 'Submitted',
+        adjustedDeadline: endDate
+      }
+      createExtensionRequest(bodyData);
+    } catch (error) {
+      console.log(error)
+    }
+  } 
+
   const handlePopupExtensionsClose = () => {
     setPopupOpen(false);
   };
 
-  const moduleSelect = ['CSC8019', 'CSC8015', 'CSC8014', 'CSC8022'];
-  const assignmentSelect = [
-    'assignment001',
-    'assignment002',
-    'assignment003',
-    'assignment004',
-  ];
+  const handleReasonChange = (event) => {
+    setReason(event.target.value);
+  };
+
+  const fetchAssignmentList = useCallback(
+    async (moduleId) => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (token && moduleId !== '') {
+          const response = await getAssignmentList(moduleId, parseJwt(token).userID);
+          const assignmentArray = Object.values(response);
+          if (assignmentArray.length > 0) {
+            const defaultAssignmentId = assignmentArray[0].courseworkID;
+            setSelectedAssignment(defaultAssignmentId);
+          }
+          setAssignment(response);
+        } else {
+          window.location.href = SIGNIN_URL;
+        }
+      } catch (error) {
+        console.error('Error fetching modules:', error);
+      }
+    },
+    [selectedModule],
+  );
+
+  useEffect(() => {
+    // fetch default module and student list
+    const fetchDefaultModule = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          const parseToken = parseJwt(token);
+          const response = await getStudentModules(parseToken.userID);
+          const moduleArray = Object.values(response);
+          if (moduleArray.length > 0) {
+            const defaultModuleId = moduleArray[0].moduleID;
+            setSelectedModule(defaultModuleId);
+            setSelectedModuleName(moduleArray[0].moduleName);
+            await fetchAssignmentList(defaultModuleId);
+          }
+          setModule(moduleArray);
+        } else {
+          window.location.href = SIGNIN_URL;
+        }
+      } catch (error) {
+        console.error('Error fetching modules:', error);
+      }
+    };
+
+    fetchDefaultModule();
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -115,32 +201,33 @@ const Extensions = () => {
                 <FormLabel htmlFor="module">Modules Name</FormLabel>
                 <Select
                   displayEmpty
-                  value={module}
+                  value={selectedModule}
                   onChange={handleModuleChange}
                   input={<OutlinedInput />}
                   renderValue={(selected) => {
                     if (selected.length === 0) {
                       return <em>Select Module</em>;
                     }
-                    return selected;
+                    return selectedModule + ' ' + selectedModuleName;
                   }}
                   sx={{
                     mt: 2,
                   }}
                   inputProps={{ 'aria-label': 'Without label' }}
                 >
-                  {moduleSelect.map((title) => (
-                    <MenuItem key={title} value={title}>
-                      {title}
-                    </MenuItem>
-                  ))}
+                  {module &&
+                    module.map((module) => (
+                      <MenuItem key={module.moduleID} value={module.moduleID}>
+                        {module.moduleID} - {module.moduleName}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormGrid>
               <FormGrid item xs={12} md={6}>
-                <FormLabel htmlFor="module">Assignment</FormLabel>
+                <FormLabel htmlFor="assignment">Assignment</FormLabel>
                 <Select
                   displayEmpty
-                  value={assignment}
+                  value={selectedAssignment}
                   onChange={handleAssignmentChange}
                   input={<OutlinedInput />}
                   renderValue={(selected) => {
@@ -154,11 +241,12 @@ const Extensions = () => {
                   }}
                   inputProps={{ 'aria-label': 'Without label' }}
                 >
-                  {assignmentSelect.map((title) => (
-                    <MenuItem key={title} value={title}>
-                      {title}
-                    </MenuItem>
-                  ))}
+                  {assignment &&
+                    assignment.map((assignment) => (
+                      <MenuItem key={assignment.courseworkID} value={assignment.courseworkID}>
+                        {assignment.moduleID} - {assignment.courseworkID}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormGrid>
             </Grid>
@@ -179,6 +267,8 @@ const Extensions = () => {
                   multiline
                   rows={5} // Set the number of rows you want to display
                   variant="outlined"
+                  value={reason}
+                  onChange={handleReasonChange}
                   sx={{
                     mt: 2,
                   }}
@@ -225,6 +315,7 @@ const Extensions = () => {
       <PopupExtensions
         open={popupOpen}
         handlePopupExtensionsClose={handlePopupExtensionsClose}
+        handlePopUpExtensionsSubmit={handlePopUpExtensionsSubmit}
       />
     </ThemeProvider>
   );
