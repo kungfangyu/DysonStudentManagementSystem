@@ -14,14 +14,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const PopupExtensions = ({ open, handlePopupExtensionsClose, handlePopUpExtensionsSubmit }) => {
+const PopupExtensions = ({
+  open,
+  handlePopupExtensionsClose,
+  handlePopUpExtensionsSubmit,
+}) => {
   const handleClose = () => {
     handlePopupExtensionsClose && handlePopupExtensionsClose();
   };
 
   const handleAgree = async () => {
     handlePopUpExtensionsSubmit && handlePopUpExtensionsSubmit();
-  }
+  };
 
   return (
     <>

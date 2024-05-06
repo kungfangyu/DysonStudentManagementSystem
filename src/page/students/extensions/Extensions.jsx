@@ -2,13 +2,12 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-15 16:57:29
+ * @LastEditTime: 2024-05-06 22:00:18
  * @FilePath: /csc8019_team_project_frontend/src/page/students/extensions/Extensions.jsx
  */
 import dayjs from 'dayjs';
 import * as React from 'react';
-import { useCallback, useState, useEffect } from 'react';
-import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import SendIcon from '@mui/icons-material/Send';
@@ -33,15 +32,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 import { getAssignmentList } from '../../../api/assignmentList';
-import { getStudentModules, createExtensionRequest } from '../../../api/modules';
+import { createExtensionRequest } from '../../../api/extension';
+import { getStudentModules } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
+import { SIGNIN_URL } from '../../../data/data';
 import { parseJwt } from '../../../helpers/jwt';
 import { FormGrid } from '../../../style/formStyle';
 import theme from '../../../style/theme';
-import { SIGNIN_URL } from '../../../data/data';
 
 import PopupExtensions from '../../../components/PopupExtensions';
 
@@ -53,7 +53,7 @@ const Extensions = () => {
 
   const [selectedAssignment, setSelectedAssignment] = useState('');
   const [assignment, setAssignment] = useState([]);
-
+  const [assignmentName, setAssignmentName] = useState('');
   const [reason, setReason] = useState('');
 
   const [startDate, setStartDate] = useState(dayjs(Date.now()));
@@ -72,13 +72,16 @@ const Extensions = () => {
     setSelectedModule(selectedModuleId);
     setSelectedModuleName(selectedModule.moduleName);
     fetchAssignmentList(selectedModuleId);
+    setAssignmentName('');
+    setSelectedAssignment('');
   };
 
   const handleAssignmentChange = (event) => {
     const selectedAssignmentId = event.target.value;
     const selectedAssignment = assignment.find(
-      (assignment) => assignment.courseworkID === selectedAssignmentId,
+      (assignment) => assignment.courseworkId === selectedAssignmentId,
     );
+    setAssignmentName(selectedAssignment.description);
     setSelectedAssignment(selectedAssignmentId);
   };
 
@@ -96,13 +99,13 @@ const Extensions = () => {
         requestDate: new Date(Date.now()).toISOString(),
         requestReason: reason,
         status: 'Submitted',
-        adjustedDeadline: endDate
-      }
+        adjustedDeadline: endDate,
+      };
       createExtensionRequest(bodyData);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  } 
+  };
 
   const handlePopupExtensionsClose = () => {
     setPopupOpen(false);
@@ -112,27 +115,19 @@ const Extensions = () => {
     setReason(event.target.value);
   };
 
-  const fetchAssignmentList = useCallback(
-    async (moduleId) => {
-      try {
-        const token = localStorage.getItem('accessToken');
-        if (token && moduleId !== '') {
-          const response = await getAssignmentList(moduleId, parseJwt(token).userID);
-          const assignmentArray = Object.values(response);
-          if (assignmentArray.length > 0) {
-            const defaultAssignmentId = assignmentArray[0].courseworkID;
-            setSelectedAssignment(defaultAssignmentId);
-          }
-          setAssignment(response);
-        } else {
-          window.location.href = SIGNIN_URL;
-        }
-      } catch (error) {
-        console.error('Error fetching modules:', error);
+  const fetchAssignmentList = useCallback(async (moduleId) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token && moduleId !== '') {
+        const response = await getAssignmentList(moduleId);
+        setAssignment(response);
+      } else {
+        window.location.href = SIGNIN_URL;
       }
-    },
-    [selectedModule],
-  );
+    } catch (error) {
+      console.error('Error fetching modules:', error);
+    }
+  }, []);
 
   useEffect(() => {
     // fetch default module and student list
@@ -234,7 +229,7 @@ const Extensions = () => {
                     if (selected.length === 0) {
                       return <em>Select Assignment</em>;
                     }
-                    return selected;
+                    return selectedAssignment + ' ' + assignmentName;
                   }}
                   sx={{
                     mt: 2,
@@ -243,8 +238,11 @@ const Extensions = () => {
                 >
                   {assignment &&
                     assignment.map((assignment) => (
-                      <MenuItem key={assignment.courseworkID} value={assignment.courseworkID}>
-                        {assignment.moduleID} - {assignment.courseworkID}
+                      <MenuItem
+                        key={assignment.courseworkId}
+                        value={assignment.courseworkId}
+                      >
+                        {assignment.courseworkId} - {assignment.description}
                       </MenuItem>
                     ))}
                 </Select>
