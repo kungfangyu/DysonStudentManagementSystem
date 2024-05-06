@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-30 17:48:02
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-05 20:01:20
+ * @LastEditTime: 2024-05-06 18:44:12
  * @FilePath: /csc8019_team_project_frontend/src/api/modules.js
  */
 import service from './axios';
@@ -25,6 +25,21 @@ export const getCourseworks = async (moduleID) => {
   return await service({
     url: `/Coursework/${moduleID}`,
     method: 'get',
+  });
+};
+
+export const postCoursework = async (coursework) => {
+  return await service({
+    url: `/Coursework`,
+    method: 'post',
+    data: coursework,
+  });
+};
+
+export const deleteCoursework = async (moduleID, courseworkID) => {
+  return await service({
+    url: `/Coursework/${moduleID}/${courseworkID}`,
+    method: 'delete',
   });
 };
 
@@ -67,6 +82,21 @@ export const postModuleAnnouncement = async (announcement) => {
 export const getModuleDetails = async (moduleID) => {
   return await service({
     url: `/moduleDetails/${moduleID}`,
+    method: 'get',
+  });
+};
+
+export const postModuleMaterial = async (material) => {
+  return await service({
+    url: `/moduleMaterialFile`,
+    method: 'post',
+    data: material,
+  });
+};
+
+export const getModuleMaterial = async (moduleID) => {
+  return await service({
+    url: `/moduleMaterial/${moduleID}`,
     method: 'get',
   });
 };
