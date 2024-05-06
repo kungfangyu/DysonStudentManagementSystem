@@ -28,6 +28,21 @@ export const getCourseworks = async (moduleID) => {
   });
 };
 
+export const postCoursework = async (coursework) => {
+  return await service({
+    url: `/Coursework`,
+    method: 'post',
+    data: coursework,
+  });
+};
+
+export const deleteCoursework = async (moduleID, courseworkID) => {
+  return await service({
+    url: `/Coursework/${moduleID}/${courseworkID}`,
+    method: 'delete',
+  });
+};
+
 export const getCoursesworkDetails = async (moduleID, courseworkID) => {
   return await service({
     url: `/Coursework/${moduleID}/${courseworkID}`,
@@ -56,9 +71,32 @@ export const getModuleAnnouncements = async (moduleID) => {
   });
 };
 
+export const postModuleAnnouncement = async (announcement) => {
+  return await service({
+    url: `/moduleAnnouncement`,
+    method: 'post',
+    data: announcement,
+  });
+};
+
 export const getModuleDetails = async (moduleID) => {
   return await service({
     url: `/moduleDetails/${moduleID}`,
+    method: 'get',
+  });
+};
+
+export const postModuleMaterial = async (material) => {
+  return await service({
+    url: `/moduleMaterialFile`,
+    method: 'post',
+    data: material,
+  });
+};
+
+export const getModuleMaterial = async (moduleID) => {
+  return await service({
+    url: `/moduleMaterial/${moduleID}`,
     method: 'get',
   });
 };

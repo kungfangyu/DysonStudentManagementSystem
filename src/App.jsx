@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 13:07:52
+ * @LastEditTime: 2024-05-06 02:07:11
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -90,10 +90,10 @@ const App = () => {
               path="/academichistory"
               element={<AcademicHistory />}
             />
-            <Route exact path="/staff/modules" element={<StaffModuleList />} />
+            <Route exact path="/staffmodules" element={<StaffModuleList />} />
             <Route
               exact
-              path="/staff/modules/:moduleId"
+              path="staffmodules/:moduleId"
               element={<ModuleEdited />}
             />
             <Route exact path="/studentlist" element={<StudentList />} />

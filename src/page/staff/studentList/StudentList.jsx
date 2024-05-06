@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-04 18:07:31
+ * @LastEditTime: 2024-05-05 22:35:40
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/studentList/StudentList.jsx
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -169,7 +169,10 @@ const StudentList = () => {
                 mt: 4,
               }}
             >
-              <StudentListTable studentList={studentList} />
+              <StudentListTable
+                studentList={studentList}
+                selectedModule={selectedModule}
+              />
             </Grid>
           </Container>
 
