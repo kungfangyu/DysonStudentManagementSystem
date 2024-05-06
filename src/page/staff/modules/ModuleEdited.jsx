@@ -2,17 +2,14 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-25 15:54:11
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-05 20:26:36
+ * @LastEditTime: 2024-05-06 18:43:16
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/modules/ModuleEdited.jsx
  */
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -21,6 +18,9 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
+import * as React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
@@ -34,7 +34,13 @@ import PopupEditIntro from '../../../components/modules/PopupEditIntro';
 import { ModuleEditCardPaper } from '../../../style/cardStyle';
 import theme from '../../../style/theme';
 
-import { getModuleAnnouncements, getModuleDetails } from '../../../api/modules';
+import {
+  deleteCoursework,
+  getCourseworks,
+  getModuleAnnouncements,
+  getModuleDetails,
+  getModuleMaterial,
+} from '../../../api/modules';
 import { SIGNIN_URL } from '../../../data/data';
 
 const ModuleEdited = () => {
@@ -44,11 +50,14 @@ const ModuleEdited = () => {
   const [popupAddMaterialOpen, setPopupAddMaterialOpen] = useState(false);
   const [popupAddCourseworkOpen, setPopupAddCourseworkOpen] = useState(false);
   const [popupEditIntro, setPopupEditIntro] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteCourseworkConfirmOpen, setDeleteCourseworkConfirmOpen] =
+    useState(false);
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [announce, setAnnounce] = useState([]);
   const [description, setDescription] = useState('');
 
+  const [coursework, setCoursework] = useState([]);
+  const [material, setMaterial] = useState([]);
   const fetchModuleAnnouncements = useCallback(async () => {
     try {
       const token = localStorage.getItem('accessToken');
@@ -80,11 +89,44 @@ const ModuleEdited = () => {
     }
   }, [moduleId]);
 
+  const fetchCoursework = useCallback(async () => {
+    const token = localStorage.getItem('accessToken');
+
+    try {
+      if (token) {
+        const response = await getCourseworks(moduleId);
+        const results = response;
+        setCoursework(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
+
+  const fetchMaterial = useCallback(async () => {
+    const token = localStorage.getItem('accessToken');
+
+    try {
+      if (token) {
+        const response = await getModuleMaterial(moduleId);
+        const results = response;
+        console.log('🚀 ~ fetchMaterial ~ results:', results);
+        setMaterial(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, [moduleId]);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const handleAddAnnouncement = (moduleId) => {
+  const handleAddAnnouncement = () => {
     setPopupAddAnnounceOpen(true);
   };
 
@@ -92,7 +134,7 @@ const ModuleEdited = () => {
     setPopupAddMaterialOpen(true);
   };
 
-  const handleAddCoursework = (moduleId) => {
+  const handleAddCoursework = () => {
     setPopupAddCourseworkOpen(true);
   };
 
@@ -100,17 +142,26 @@ const ModuleEdited = () => {
     setPopupEditIntro(true);
   };
 
-  const handleDelete = (itemId) => {
-    // Here, you can implement the logic to delete the item with the specified ID
-    console.log('Deleting item with ID:', itemId);
-    // After deletion, close the delete confirmation popup
-    setDeleteConfirmOpen(false);
+  const handleDeleteCoursework = async (moduleId, courseId) => {
+    try {
+      await deleteCoursework(moduleId, courseId);
+      setDeleteCourseworkConfirmOpen(false);
+      fetchCoursework();
+    } catch (error) {
+      console.log('Error deleting coursework');
+    }
   };
-
   useEffect(() => {
     fetchModuleDetails();
     fetchModuleAnnouncements();
-  }, [fetchModuleAnnouncements, fetchModuleDetails]);
+    fetchCoursework();
+    fetchMaterial();
+  }, [
+    fetchModuleAnnouncements,
+    fetchModuleDetails,
+    fetchCoursework,
+    fetchMaterial,
+  ]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -169,7 +220,7 @@ const ModuleEdited = () => {
                     <IconButton
                       onClick={() => {
                         setDeleteItemId(1);
-                        setDeleteConfirmOpen(true);
+                        // setDeleteConfirmOpen(true);
                       }}
                     >
                       <DeleteIcon />
@@ -219,28 +270,39 @@ const ModuleEdited = () => {
             }}
           >
             <h3>Material Upload</h3>
-            <ModuleEditCardPaper>
-              <Box
-                sx={{
-                  mt: 0,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography>Week 0</Typography>
-                <Typography>Module Material</Typography>
-
-                <IconButton
-                  onClick={() => {
-                    setDeleteItemId(1);
-                    setDeleteConfirmOpen(true);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            </ModuleEditCardPaper>
+            {material.map((item) => {
+              return (
+                <ModuleEditCardPaper key={item.materialId}>
+                  <Box
+                    sx={{
+                      mt: 0,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography>{item.description}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
+                      <Box>
+                        {item.materialPublished ? (
+                          <RemoveRedEyeIcon />
+                        ) : (
+                          <RemoveRedEyeIcon />
+                        )}
+                      </Box>
+                      <IconButton
+                        onClick={() => {
+                          setDeleteItemId(item.materialId);
+                          // setDeleteConfirmOpen(true);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </ModuleEditCardPaper>
+              );
+            })}
             <IconButton
               color="primary"
               sx={{ mt: 1 }}
@@ -257,28 +319,40 @@ const ModuleEdited = () => {
             }}
           >
             <h3>Coursework Upload</h3>
-            <ModuleEditCardPaper>
-              <Box
-                sx={{
-                  mt: 0,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography>Week 0</Typography>
-                <Typography>Coursework</Typography>
+            {coursework.map((item) => {
+              return (
+                <ModuleEditCardPaper key={item.courseworkId}>
+                  <Box
+                    sx={{
+                      mt: 0,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography>{item.description}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
+                      <Box>
+                        {item.courseworkPublished ? (
+                          <RemoveRedEyeIcon />
+                        ) : (
+                          <RemoveRedEyeIcon />
+                        )}
+                      </Box>
+                      <IconButton
+                        onClick={() => {
+                          setDeleteItemId(item.courseworkId);
+                          setDeleteCourseworkConfirmOpen(true);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </ModuleEditCardPaper>
+              );
+            })}
 
-                <IconButton
-                  onClick={() => {
-                    setDeleteItemId(1);
-                    setDeleteConfirmOpen(true);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            </ModuleEditCardPaper>
             <IconButton
               color="primary"
               aria-label="create a new coursework"
@@ -309,14 +383,15 @@ const ModuleEdited = () => {
         handlePopupClose={() => setPopupAddMaterialOpen(false)}
       />
       <PopupAddCoursework
+        fetchCoursework={fetchCoursework}
         open={popupAddCourseworkOpen}
         moduleId={moduleId}
         handlePopupClose={() => setPopupAddCourseworkOpen(false)}
       />
       <PopupDeleteConfirm
-        open={deleteConfirmOpen}
-        handleClose={() => setDeleteConfirmOpen(false)}
-        handleDelete={() => handleDelete(deleteItemId)}
+        open={deleteCourseworkConfirmOpen}
+        handleClose={() => setDeleteCourseworkConfirmOpen(false)}
+        handleDelete={() => handleDeleteCoursework(moduleId, deleteItemId)}
       />
     </ThemeProvider>
   );

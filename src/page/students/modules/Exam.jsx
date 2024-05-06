@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-22 22:20:01
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-03 01:22:32
+ * @LastEditTime: 2024-05-06 18:58:54
  * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/Exam.jsx
  */
 
@@ -12,13 +12,13 @@ import { Link, useParams } from 'react-router-dom';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 import { getExamsDetails } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
@@ -34,7 +34,7 @@ const Exam = () => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  const [examData, setAssignmentData] = useState();
+  const [examData, setExamData] = useState();
 
   const fetchExamDetails = useCallback(async () => {
     try {
@@ -42,7 +42,7 @@ const Exam = () => {
       if (token) {
         const response = await getExamsDetails(moduleId, examId);
         const results = response;
-        setAssignmentData(results);
+        setExamData(results);
       } else {
         window.location.href = SIGNIN_URL;
       }
@@ -96,14 +96,14 @@ const Exam = () => {
           >
             <h2>Exam Descriptions</h2>
             <Typography mt={2} color={'primary'}>
-              Start: {examData.startTime}
+              Start: {examData && examData.startTime}
             </Typography>
             <Typography mt={2} color={'primary'}>
-              End: {examData.endTime}
+              End: {examData && examData.endTime}
             </Typography>
 
             <Typography mt={2}>
-              Percentage of Module: {examData.percentageOfModule}
+              Percentage of Module: {examData && examData.percentageOfModule}
             </Typography>
             <Typography mt={2}>
               Link to Exam :
