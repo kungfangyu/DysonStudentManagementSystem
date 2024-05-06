@@ -2,12 +2,12 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 17:03:00
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-26 22:46:59
+ * @LastEditTime: 2024-05-07 00:20:15
  * @FilePath: /csc8019_team_project_frontend/src/components/AbsenceForm.jsx
  */
 
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
@@ -20,110 +20,126 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
+import { getLesson, postAbsenceRequest } from '../api/absence';
+import { getStudentModules } from '../api/modules';
 import PopupBookingAndAbsence from '../components/PopupBookingAndAbsence';
-import { listModuleDetails } from '../api/ModuleDetailAPI';
-import { lessonByModuleID } from '../api/LessonDetails';
-import { createAbsenceRequest } from '../api/AbsenceRequest';
+import { SIGNIN_URL } from '../data/data';
 import { parseJwt } from '../helpers/jwt';
 import { FormGrid } from '../style/formStyle';
 
 const AbsenceForm = () => {
-  let [module, setModule] = useState([]);
-  let [absenceTime, setAbsenceTime] = useState([]);
-  let [selectedModuleName, setSelectedModuleName] = useState('');
-  let [selectedTime, setSelectedTime] = useState('');
-  let [selectedLesson, setSelectedLesson] = useState('');
-  let [absenceReason, setAbsenceReason] = useState('');
+  const [modules, setModules] = useState([]);
+  const [absenceTimeList, setAbsenceTimeList] = useState([]);
+  const [selectedModuleName, setSelectedModuleName] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [lessonId, setLessonId] = useState('');
+  const [absenceReason, setAbsenceReason] = useState('');
 
-  let [userID, setUserId] = useState('');
+  const [selectedModule, setSelectedModule] = useState('');
+
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  const fetchLesson = useCallback(
+    async (moduleID) => {
+      const token = localStorage.getItem('accessToken');
+      try {
+        if (token) {
+          console.log(selectedModule);
+          const response = await getLesson(selectedModule);
+          setAbsenceTimeList(response);
+        } else {
+          window.location.href = SIGNIN_URL;
+        }
+      } catch (error) {
+        console.error('Error fetching student modules:', error);
+      }
+    },
+    [selectedModule],
+  );
+
+  const handleModuleChange = (event) => {
+    const selectedModuleId = event.target.value;
+    const selectedModule = modules.find(
+      (module) => module.moduleID === selectedModuleId,
+    );
+    setSelectedModule(selectedModuleId);
+    setSelectedModuleName(selectedModule.moduleName);
+    setSelectedTime('');
+    fetchLesson(selectedModuleId);
+  };
 
   useEffect(() => {
-    let token = localStorage.getItem('accessToken');
-    if (token) {
-      let parsedToken = parseJwt(token);
-      setUserId(parsedToken.userID);
-    }
-  }, []);
+    // fetch default module and student list
+    const fetchDefaultModule = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          const parseToken = parseJwt(token);
+          const response = await getStudentModules(parseToken.userID);
+          const moduleArray = Object.values(response);
+          if (moduleArray.length > 0) {
+            const defaultModuleId = moduleArray[0].moduleID;
+            setSelectedModule(defaultModuleId);
+            setSelectedModuleName(moduleArray[0].moduleName);
+            await fetchLesson(defaultModuleId);
+          }
+          setModules(moduleArray);
+        } else {
+          window.location.href = SIGNIN_URL;
+        }
+      } catch (error) {
+        console.error('Error fetching modules:', error);
+      }
+    };
 
-  useEffect(() => {
-    listModuleDetails()
-      .then((response) => {
-        setModule(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (selectedModuleName) {
-      lessonByModuleID(selectedModuleName)
-        .then((response) => {
-          setAbsenceTime(response.data); // Set absenceTime state
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      setAbsenceTime([]);
-    }
-  }, [selectedModuleName]);
+    fetchDefaultModule();
+  }, [fetchLesson]);
 
   useEffect(() => {
     if (selectedTime) {
-      let lesson = absenceTime.find(function (time) {
+      const lesson = absenceTimeList.find(function (time) {
         return time.startTime === selectedTime;
       });
       if (!lesson) {
         return;
       }
-      setSelectedLesson(lesson.lessonID);
+      setLessonId(lesson.lessonID);
     }
-  }, [selectedTime, absenceTime]);
+  }, [selectedTime, absenceTimeList]);
 
-  let [popupOpen, setPopupOpen] = useState(false);
-
-  let handleReasonChange = (event) => {
-    let absenceReason;
-    absenceReason = event.target.value;
+  const handleReasonChange = (event) => {
+    const absenceReason = event.target.value;
     setAbsenceReason(absenceReason);
   };
 
-  let handleModuleChange = (event) => {
-    let selectedModuleID;
-    selectedModuleID = event.target.value;
-    let selectedModule;
-    selectedModule = module.find((m) => m.moduleID === selectedModuleID);
-    if (!selectedModule) {
-      setSelectedModuleName('');
-    } else {
-      setSelectedModuleName(selectedModuleID);
-    }
-  };
-
-  let handleAbsenceTimeChange = (event) => {
-    let selectedTime;
-    selectedTime = event.target.value;
+  const handleAbsenceTimeChange = (event) => {
+    const selectedTime = event.target.value;
     setSelectedTime(selectedTime);
   };
 
-  let handlePopupConfirm = () => {
+  const handlePopupConfirm = () => {
     setPopupOpen(true);
   };
 
-  let handleSubmit = () => {
-    let absenceRequestData = {
-      moduleID: selectedModuleName,
-      lessonID: selectedLesson,
-      studentID: userID,
-      requestReason: absenceReason,
-      requestStatus: 'submitted',
-    };
-    createAbsenceRequest(absenceRequestData)
-      .then(() => {})
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const absenceRequestData = {
+          moduleID: selectedModuleName,
+          lessonID: lessonId,
+          studentID: parseToken.userID,
+          requestReason: absenceReason,
+          requestStatus: 'submitted',
+        };
+
+        await postAbsenceRequest(absenceRequestData);
+        handlePopupConfirmClose();
+      }
+    } catch (error) {
+      console.log('Error creating announcement');
+    }
   };
 
   const handlePopupConfirmClose = () => {
@@ -141,32 +157,30 @@ const AbsenceForm = () => {
         space={2}
       >
         <Grid container spacing={1}>
-          <FormGrid item xs={12} md={5.5}>
+          <FormGrid item xs={12} md={6}>
             <FormLabel htmlFor="module">Modules Name</FormLabel>
             <Select
               displayEmpty
-              value={module}
+              value={selectedModule}
               onChange={handleModuleChange}
               input={<OutlinedInput />}
               renderValue={(selected) => {
-                if (!selected) {
+                if (!selected || selected === '') {
                   return <em>Select Module</em>;
                 }
-                return selectedModuleName || <em>Select Module</em>;
+                return selectedModule + '-' + selectedModuleName;
               }}
               sx={{
                 mt: 2,
               }}
               inputProps={{ 'aria-label': 'Without label' }}
             >
-              <MenuItem value="">Select Module</MenuItem>
-              {module.map(function (mod) {
-                return (
-                  <MenuItem key={mod.moduleID} value={mod.moduleID}>
-                    {mod.moduleID}
+              {modules &&
+                modules.map((module) => (
+                  <MenuItem key={module.moduleID} value={module.moduleID}>
+                    {module.moduleID} - {module.moduleName}
                   </MenuItem>
-                );
-              })}
+                ))}
             </Select>
           </FormGrid>
           <FormGrid item xs={12} md={5.5}>
@@ -176,31 +190,27 @@ const AbsenceForm = () => {
               value={selectedTime}
               onChange={handleAbsenceTimeChange}
               input={<OutlinedInput />}
+              renderValue={(selected) => {
+                if (!selected || selected === '') {
+                  return <em>Select Time</em>;
+                }
+                return selectedTime;
+              }}
               sx={{
                 mt: 2,
               }}
               inputProps={{ 'aria-label': 'Without label' }}
             >
               <MenuItem value="">Select Time</MenuItem>
-              {absenceTime.map((time) => (
-                <MenuItem key={time.startTime} value={time.startTime}>
-                  {time.startTime}
-                </MenuItem>
-              ))}
+              {absenceTimeList &&
+                absenceTimeList.map((time) => (
+                  <MenuItem key={time.startTime} value={time.startTime}>
+                    {time.startTime}
+                  </MenuItem>
+                ))}
             </Select>
           </FormGrid>
-          <FormGrid item xs={12} md={1}>
-            <FormLabel htmlFor="absenceTime">LessonID:</FormLabel>
-            <Select
-              displayEmpty
-              value={selectedLesson}
-              input={<OutlinedInput readOnly />} // Make the input read-only
-              sx={{ mt: 2 }}
-              inputProps={{ 'aria-label': 'Without label' }}
-            >
-              <MenuItem value={selectedLesson}>{selectedLesson}</MenuItem>
-            </Select>
-          </FormGrid>
+
           <FormGrid item xs={12} sx={{ mt: 4 }}>
             <FormLabel htmlFor="reason">Absence Reason</FormLabel>
             <TextField
