@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 21:37:20
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-04 15:34:43
+ * @LastEditTime: 2024-05-06 01:48:39
  * @FilePath: /csc8019_team_project_frontend/src/components/modules/ModuleCard.jsx
  */
 import { CardActionArea } from '@mui/material';
@@ -13,14 +13,19 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
+import { parseJwt } from '../../helpers/jwt';
 
 const ModuleCard = ({ moduleData }) => {
+  const token = localStorage.getItem('accessToken');
+  const parse = parseJwt(token);
+  const userType = parse.userType;
+  const isStudent = userType === 'student';
   return (
     <Grid container sx={{ justifyContent: 'space-around' }}>
       {moduleData.map((items) => {
         return (
           <Link
-            href={`modules/${items.moduleID}`}
+            href={`${isStudent ? 'modules' : 'staffmodules'}/${items.moduleID}`}
             underline="none"
             key={items.moduleID}
           >

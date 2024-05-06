@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-03 10:16:16
+ * @LastEditTime: 2024-05-05 22:55:33
  * @FilePath: /csc8019_team_project_frontend/src/page/signin/SignIn.jsx
  */
 
@@ -45,7 +45,7 @@ const SignIn = () => {
       if (userType === 'student') {
         window.location.href = '/modules';
       } else {
-        window.location.href = '/staff/modules';
+        window.location.href = '/staffmodules';
       }
     } catch (error) {
       console.error('Login failed', error);
