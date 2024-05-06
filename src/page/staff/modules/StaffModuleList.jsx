@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-15 14:01:15
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 23:18:32
- * @FilePath: /csc8019_team_project_frontend/src/page/students/modules/ModuleList.jsx
+ * @LastEditTime: 2024-05-06 01:40:38
+ * @FilePath: /csc8019_team_project_frontend/src/page/staff/modules/StaffModuleList.jsx
  */
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -16,7 +16,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider } from '@mui/material/styles';
-import { getStudentModules } from '../../../api/modules';
+import { getStaffModules } from '../../../api/modules';
 import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
@@ -26,32 +26,32 @@ import { SIGNIN_URL } from '../../../data/data';
 import { parseJwt } from '../../../helpers/jwt';
 import theme from '../../../style/theme';
 
-const ModuleList = () => {
+const StaffModuleList = () => {
   const [moduleData, setModuleData] = useState([]);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const fetchStudentModules = useCallback(async () => {
+  const fetchStaffModules = useCallback(async () => {
     try {
       const token = localStorage.getItem('accessToken');
       if (token) {
         const parseToken = parseJwt(token);
-        const response = await getStudentModules(parseToken.userID);
+        const response = await getStaffModules(parseToken.userID);
         const results = response;
         setModuleData(results);
       } else {
         window.location.href = SIGNIN_URL;
       }
     } catch (error) {
-      console.error('Error fetching student modules:', error);
+      console.error('Error fetching staff modules:', error);
     }
   }, []);
 
   useEffect(() => {
-    fetchStudentModules();
-  }, [fetchStudentModules]);
+    fetchStaffModules();
+  }, [fetchStaffModules]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -98,4 +98,4 @@ const ModuleList = () => {
   );
 };
 
-export default ModuleList;
+export default StaffModuleList;

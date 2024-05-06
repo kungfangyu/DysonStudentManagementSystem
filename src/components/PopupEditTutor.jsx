@@ -2,8 +2,8 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 14:17:58
- * @FilePath: /csc8019_team_project_frontend/src/components/PopupEditStatus.jsx
+ * @LastEditTime: 2024-05-06 02:24:39
+ * @FilePath: /csc8019_team_project_frontend/src/components/PopupEditTutor.jsx
  */
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -11,7 +11,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as React from 'react';
-import { useState } from 'react';
 
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -19,35 +18,29 @@ import Select from '@mui/material/Select';
 
 import { FormGrid } from '../style/formStyle';
 
-const statusSelect = [
+const tutorSelect = [
   {
-    value: 'register',
+    value: 'Alice Smith',
   },
   {
-    value: 'enrolled',
+    value: 'Michael Williams',
   },
   {
-    value: 'suspended',
+    value: 'Emily Brown',
   },
   {
-    value: 'withdraw',
+    value: 'James Jones',
   },
 ];
 
-const PopupEditStatus = ({
-  open,
-  handlePopupEditClose,
-  initStatus,
-  moduleId,
-}) => {
-  const [status, setStatus] = useState(initStatus);
-
+const PopupEditStatus = ({ open, handlePopupEditClose }) => {
+  const [tutor, setTutor] = React.useState('');
   const handleClose = () => {
     handlePopupEditClose && handlePopupEditClose();
   };
 
-  const handleStatusChange = (event) => {
-    setStatus(event.target.value);
+  const handleTutorChange = (event) => {
+    setTutor(event.target.value);
   };
   return (
     <>
@@ -56,21 +49,19 @@ const PopupEditStatus = ({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        PaperProps={{ sx: { width: '300px' } }}
+        PaperProps={{ sx: { width: '350px' } }}
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Edit Course Status'}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Edit Tutor'}</DialogTitle>
         <DialogContent>
           <FormGrid item xs={12} md={6}>
             <Select
               displayEmpty
-              value={status}
-              onChange={handleStatusChange}
+              value={tutor}
+              onChange={handleTutorChange}
               input={<OutlinedInput />}
               renderValue={(selected) => {
                 if (selected.length === 0) {
-                  return <em>Select status</em>;
+                  return <em>Select tutor</em>;
                 }
                 return selected;
               }}
@@ -79,7 +70,7 @@ const PopupEditStatus = ({
               }}
               inputProps={{ 'aria-label': 'Without label' }}
             >
-              {statusSelect.map((item) => (
+              {tutorSelect.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
                   {item.value}
                 </MenuItem>

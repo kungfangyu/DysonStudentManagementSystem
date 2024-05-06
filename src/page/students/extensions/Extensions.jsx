@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-11 15:28:17
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-15 16:57:29
+ * @LastEditTime: 2024-04-26 22:46:32
  * @FilePath: /csc8019_team_project_frontend/src/page/students/extensions/Extensions.jsx
  */
 import dayjs from 'dayjs';
@@ -35,7 +35,7 @@ import Copyright from '../../../common/Copyright';
 import Aside from '../../../common/aside/Aside';
 import AsideItems from '../../../common/aside/AsideItems';
 import Nav from '../../../common/aside/Nav';
-import FormGrid from '../../../style/formStyle';
+import { FormGrid } from '../../../style/formStyle';
 import theme from '../../../style/theme';
 
 import PopupExtensions from '../../../components/PopupExtensions';

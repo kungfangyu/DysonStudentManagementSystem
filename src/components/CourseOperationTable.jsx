@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-23 13:38:08
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-04-23 18:35:15
+ * @LastEditTime: 2024-05-01 14:18:25
  * @FilePath: /csc8019_team_project_frontend/src/components/CourseOperationTable.jsx
  */
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -20,31 +20,31 @@ import { StyledTableCell, StyledTableRow } from '../style/tableStyle';
 
 import PopupEditStatus from '../components/PopupEditStatus';
 
-import { getStatusColor, getStatusText } from '../helpers/helperFunction';
+import { getStatusColor } from '../helpers/helperFunction';
 
 const courseData = [
   {
     id: 'CSC8019',
     moduleName: 'Advanced Java',
-    status: 1,
+    status: 'enrolled',
     detailLink: '/modules/CSC8019',
   },
   {
     id: 'CSC8012',
     moduleName: 'Advanced Java',
-    status: 2,
+    status: 'enrolled',
     detailLink: '/modules/CSC8012',
   },
   {
     id: 'CSC8022',
     moduleName: 'Advanced Java',
-    status: 3,
+    status: 'withdraw',
     detailLink: '/modules/CSC8022',
   },
   {
     id: 'CSC8015',
     moduleName: 'Advanced Java',
-    status: 4,
+    status: 'suspended',
     detailLink: '/modules/CSC8015',
   },
 ];
@@ -80,7 +80,7 @@ const CourseOperationTable = () => {
                 <StyledTableCell align="left">{row.moduleName}</StyledTableCell>
                 <StyledTableCell align="left">
                   <Chip
-                    label={getStatusText(row.status)}
+                    label={row.status}
                     color={getStatusColor(row.status)}
                     onClick={() => handlePopupEdit(row.id, row.status)}
                   />
