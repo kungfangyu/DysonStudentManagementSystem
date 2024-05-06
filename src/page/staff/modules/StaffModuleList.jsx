@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-15 14:01:15
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-03 10:01:55
+ * @LastEditTime: 2024-05-06 01:40:38
  * @FilePath: /csc8019_team_project_frontend/src/page/staff/modules/StaffModuleList.jsx
  */
 import * as React from 'react';
@@ -40,7 +40,6 @@ const StaffModuleList = () => {
         const parseToken = parseJwt(token);
         const response = await getStaffModules(parseToken.userID);
         const results = response;
-        console.log(results);
         setModuleData(results);
       } else {
         window.location.href = SIGNIN_URL;

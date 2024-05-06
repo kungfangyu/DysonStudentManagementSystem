@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 01:05:55
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-02 01:11:50
+ * @LastEditTime: 2024-05-05 22:55:28
  * @FilePath: /csc8019_team_project_frontend/src/common/aside/AsideItems.jsx
  */
 import * as React from 'react';
@@ -36,7 +36,7 @@ const menuItems = [
     menuId: 'staffmodules',
     primary: 'Modules',
     icon: <ViewModuleIcon />,
-    link: 'staff/modules',
+    link: '/staffmodules',
     type: 'admin',
   },
   {
