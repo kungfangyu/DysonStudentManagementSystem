@@ -14,10 +14,19 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const PopupExtensions = ({ open, handlePopupExtensionsClose }) => {
+const PopupExtensions = ({
+  open,
+  handlePopupExtensionsClose,
+  handlePopUpExtensionsSubmit,
+}) => {
   const handleClose = () => {
     handlePopupExtensionsClose && handlePopupExtensionsClose();
   };
+
+  const handleAgree = async () => {
+    handlePopUpExtensionsSubmit && handlePopUpExtensionsSubmit();
+  };
+
   return (
     <>
       <Dialog
@@ -36,7 +45,7 @@ const PopupExtensions = ({ open, handlePopupExtensionsClose }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleAgree} autoFocus>
             Agree
           </Button>
         </DialogActions>
