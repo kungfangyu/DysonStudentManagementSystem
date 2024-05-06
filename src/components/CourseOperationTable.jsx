@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-23 13:38:08
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-01 14:18:25
+ * @LastEditTime: 2024-05-06 15:18:39
  * @FilePath: /csc8019_team_project_frontend/src/components/CourseOperationTable.jsx
  */
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -22,37 +22,10 @@ import PopupEditStatus from '../components/PopupEditStatus';
 
 import { getStatusColor } from '../helpers/helperFunction';
 
-const courseData = [
-  {
-    id: 'CSC8019',
-    moduleName: 'Advanced Java',
-    status: 'enrolled',
-    detailLink: '/modules/CSC8019',
-  },
-  {
-    id: 'CSC8012',
-    moduleName: 'Advanced Java',
-    status: 'enrolled',
-    detailLink: '/modules/CSC8012',
-  },
-  {
-    id: 'CSC8022',
-    moduleName: 'Advanced Java',
-    status: 'withdraw',
-    detailLink: '/modules/CSC8022',
-  },
-  {
-    id: 'CSC8015',
-    moduleName: 'Advanced Java',
-    status: 'suspended',
-    detailLink: '/modules/CSC8015',
-  },
-];
-
-const CourseOperationTable = () => {
+const CourseOperationTable = ({ moduleData }) => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedModuleId, setSelectedModuleId] = useState('');
-  const [currentStatus, setCurrentStatus] = useState(1);
+  const [currentStatus, setCurrentStatus] = useState('');
 
   const handlePopupEdit = (moduleId, status) => {
     setSelectedModuleId(moduleId);
@@ -72,10 +45,10 @@ const CourseOperationTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {courseData.map((row) => (
+            {moduleData.map((row) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
-                  {row.id}
+                  {row.moduleID}
                 </StyledTableCell>
                 <StyledTableCell align="left">{row.moduleName}</StyledTableCell>
                 <StyledTableCell align="left">
@@ -86,7 +59,7 @@ const CourseOperationTable = () => {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <Link href={row.detailLink} underline="none">
+                  <Link href={`modules/${row.moduleID}`} underline="none">
                     <RemoveRedEyeIcon />
                   </Link>
                 </StyledTableCell>

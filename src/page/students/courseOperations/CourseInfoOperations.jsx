@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Box from '@mui/material/Box';
@@ -16,12 +16,37 @@ import Nav from '../../../common/aside/Nav';
 import CourseOperationTable from '../../../components/CourseOperationTable';
 import theme from '../../../style/theme';
 
+import { getCourseOperation } from '../../../api/courseOperation';
+import { SIGNIN_URL } from '../../../data/data';
+import { parseJwt } from '../../../helpers/jwt';
+
 const CourseInfoOperations = () => {
+  const [moduleData, setModuleData] = useState([]);
   const [open, setOpen] = useState(true);
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  const fetchCourseOperation = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const response = await getCourseOperation(parseToken.userID);
+        const results = response;
+        setModuleData(results);
+      } else {
+        window.location.href = SIGNIN_URL;
+      }
+    } catch (error) {
+      console.error('Error fetching student modules:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCourseOperation();
+  }, [fetchCourseOperation]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -62,7 +87,7 @@ const CourseInfoOperations = () => {
               mb: 4,
             }}
           >
-            <CourseOperationTable />
+            <CourseOperationTable moduleData={moduleData} />
           </Container>
 
           <Copyright sx={{ pt: 4, pb: 4 }} />
