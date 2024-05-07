@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 17:03:00
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-07 01:55:13
+ * @LastEditTime: 2024-05-07 14:30:06
  * @FilePath: /csc8019_team_project_frontend/src/components/BookingForm.jsx
  */
 
@@ -19,7 +19,11 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
-import { getMeetingTime, getStudentTutor } from '../api/bookingandabsence';
+import {
+  getMeetingTime,
+  getStudentTutor,
+  updateMeetingTime,
+} from '../api/bookingandabsence';
 import { getUserPrimaryData } from '../api/user';
 import { parseJwt } from '../helpers/jwt';
 import { FormGrid } from '../style/formStyle';
@@ -32,6 +36,9 @@ const BookingForm = () => {
   const [tutorName, setTutorName] = useState('');
   const [tutorId, setTutorId] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [meetingTimeList, setMeetingTimeList] = useState([]);
+
+  const [issue, setIssue] = useState('');
 
   const fetchTutor = useCallback(async () => {
     try {
@@ -39,13 +46,11 @@ const BookingForm = () => {
       if (token) {
         const studentID = parseJwt(token).userID;
         const response = await getStudentTutor(studentID);
-        const userInfo = await getUserPrimaryData('TEA002');
+        const userInfo = await getUserPrimaryData(response[0].staffID);
         if (userInfo) {
           setTutorName(userInfo.firstName + ' ' + userInfo.lastName);
-          setTutorId(userInfo.userID);
-          fetchMeetingTime(userInfo.userID);
-
-          console.log('🚀 ~ fetchTutor ~ userInfo:', userInfo);
+          setTutorId(response[0].staffID);
+          fetchMeetingTime(response[0].staffID);
         }
       } else {
         window.location.href = SIGNIN_URL;
@@ -54,12 +59,14 @@ const BookingForm = () => {
       console.error('Error fetching student tutor:', error);
     }
   }, []);
+  console.log(tutorId);
 
   const fetchMeetingTime = useCallback(async () => {
     try {
       const token = localStorage.getItem('accessToken');
       if (token) {
-        const response = await getMeetingTime('TEA002');
+        const response = await getMeetingTime(tutorId);
+        setMeetingTimeList(response);
         console.log('🚀 ~ fetchMeetingTime ~ response:', response);
       } else {
         window.location.href = SIGNIN_URL;
@@ -79,12 +86,31 @@ const BookingForm = () => {
     setSelectedTime(selectedTime);
   };
 
-  const handlePopupConfirm = () => {
-    setPopupOpen(true);
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const parseToken = parseJwt(token);
+        const bookingData = {
+          staffID: tutorId,
+          meetingTime: selectedTime,
+          studentID: parseToken.userID,
+          notes: issue,
+        };
+        await updateMeetingTime(tutorId, selectedTime, bookingData);
+        setPopupOpen(false);
+      }
+    } catch (error) {
+      console.log('Error creating announcement');
+    }
   };
 
   const handlePopupConfirmClose = () => {
-    setPopupOpen(false);
+    handleSubmit();
+  };
+
+  const handlePopupConfirm = () => {
+    setPopupOpen(true);
   };
   return (
     <>
@@ -106,35 +132,35 @@ const BookingForm = () => {
               value={selectedTime}
               onChange={handleMeetingTimeChange}
               input={<OutlinedInput />}
-              renderValue={(selected) => {
-                if (!selected || selected === '') {
-                  return <em>Select Time</em>;
-                }
-                return selectedTime;
-              }}
+              // renderValue={(selected) => {
+              //   if (!selected || selected === '') {
+              //     return <em>Select Time</em>;
+              //   }
+              //   return selectedTime;
+              // }}
               sx={{
                 mt: 2,
               }}
               inputProps={{ 'aria-label': 'Without label' }}
             >
               <MenuItem value="">Select Time</MenuItem>
-              {/* {absenceTimeList &&
-                absenceTimeList.map((time) => (
-                  <MenuItem key={time.startTime} value={time.startTime}>
-                    {time.startTime}
+              {meetingTimeList &&
+                meetingTimeList.map((time, index) => (
+                  <MenuItem key={time.index} value={time.meetingTime}>
+                    {time.meetingTime}
                   </MenuItem>
-                ))} */}
+                ))}
             </Select>
           </FormGrid>
           <FormGrid item xs={12} sx={{ mt: 4 }}>
-            <FormLabel htmlFor="reason">Booking Issues</FormLabel>
+            <FormLabel htmlFor="issue">Booking Issues</FormLabel>
             <TextField
               placeholder="Type your issue here."
               multiline
               rows={4}
               maxRows={4}
-              value={''}
-              onChange={() => {}}
+              value={issue}
+              onChange={(e) => setIssue(e.target.value)}
             />
           </FormGrid>
         </FormGrid>
@@ -144,7 +170,7 @@ const BookingForm = () => {
           variant="contained"
           endIcon={<SendIcon />}
           size="large"
-          onClick={() => {}}
+          onClick={handleSubmit}
         >
           Send
         </Button>

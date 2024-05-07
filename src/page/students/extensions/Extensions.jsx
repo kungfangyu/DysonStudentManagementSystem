@@ -102,6 +102,7 @@ const Extensions = () => {
         adjustedDeadline: endDate,
       };
       createExtensionRequest(bodyData);
+      setPopupOpen(false);
     } catch (error) {
       console.log(error);
     }

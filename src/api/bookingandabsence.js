@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-05-06 23:35:20
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-07 00:40:23
+ * @LastEditTime: 2024-05-07 14:24:53
  * @FilePath: /csc8019_team_project_frontend/src/api/bookingandabsence.js
  */
 import service from './axios';
@@ -33,5 +33,13 @@ export const getMeetingTime = async (staffID) => {
   return await service({
     url: `tutorStudentMeeting/${staffID}`,
     method: 'get',
+  });
+};
+
+export const updateMeetingTime = async (staffID, meetingTime, requestData) => {
+  return await service({
+    url: `/tutorStudentMeeting/${staffID}/${meetingTime}`,
+    method: 'put',
+    data: requestData,
   });
 };
