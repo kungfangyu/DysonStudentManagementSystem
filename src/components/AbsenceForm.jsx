@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 17:03:00
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-07 02:07:00
+ * @LastEditTime: 2024-05-07 11:51:51
  * @FilePath: /csc8019_team_project_frontend/src/components/AbsenceForm.jsx
  */
 
@@ -112,6 +112,12 @@ const AbsenceForm = () => {
 
   const handleAbsenceTimeChange = (event) => {
     const selectedTime = event.target.value;
+    if (selectedTime) {
+      const lesson = absenceTimeList.find(function (time) {
+        return time.startTime === selectedTime;
+      });
+      setLessonId(lesson.lessonID);
+    }
     setSelectedTime(selectedTime);
   };
 
@@ -125,15 +131,14 @@ const AbsenceForm = () => {
       if (token) {
         const parseToken = parseJwt(token);
         const absenceRequestData = {
-          moduleID: selectedModuleName,
+          moduleID: selectedModule,
           lessonID: lessonId,
           studentID: parseToken.userID,
           requestReason: absenceReason,
           requestStatus: 'submitted',
         };
-
         await postAbsenceRequest(absenceRequestData);
-        handlePopupConfirmClose();
+        setPopupOpen(false);
       }
     } catch (error) {
       console.log('Error creating announcement');
@@ -141,7 +146,6 @@ const AbsenceForm = () => {
   };
 
   const handlePopupConfirmClose = () => {
-    setPopupOpen(false);
     handleSubmit();
   };
 

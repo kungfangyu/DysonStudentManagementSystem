@@ -12,7 +12,11 @@ import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
-import { getUserEmergencyData, getUserPrimaryData } from '../api/user';
+import {
+  getUserEmergencyData,
+  getUserPrimaryData,
+  updateUserPrimaryData,
+} from '../api/user';
 import { SIGNIN_URL } from '../data/data';
 import { parseJwt } from '../helpers/jwt';
 import { FormGrid } from '../style/formStyle';
@@ -29,6 +33,7 @@ const UserInfoForm = () => {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [postcode, setPostcode] = useState('');
+  const [userId, setUserId] = useState('');
 
   //Emergency Contact
   const [eTitle, setETitle] = useState([]);
@@ -40,6 +45,7 @@ const UserInfoForm = () => {
       if (token) {
         const parseToken = parseJwt(token);
         const response = await getUserPrimaryData(parseToken.userID);
+        setUserId(parseToken.userID);
         const {
           firstName,
           lastName,
@@ -80,6 +86,42 @@ const UserInfoForm = () => {
       console.error('Error fetchPrimaryData:', error);
     }
   }, []);
+
+  const updatePrimaryInfo = useCallback(
+    async (e) => {
+      e.preventDefault();
+      try {
+        const token = localStorage.getItem('accessToken');
+        const parseToken = parseJwt(token);
+        const primaryData = {
+          firstName: firstName,
+          lastName: lastName,
+          personalEmail: personalEmail,
+          dysonEmail: dysonEmail,
+          phone: phone,
+          middleNames: middleName,
+          postcode: postcode,
+          address: address,
+        };
+        console.log(primaryData);
+        await updateUserPrimaryData(parseToken.userID, primaryData);
+        fetchPrimaryData();
+      } catch (error) {
+        console.log('Error updating primary info:', error);
+      }
+    },
+    [
+      firstName,
+      lastName,
+      personalEmail,
+      dysonEmail,
+      phone,
+      middleName,
+      postcode,
+      address,
+      fetchPrimaryData,
+    ],
+  );
 
   useEffect(() => {
     fetchPrimaryData();
@@ -138,10 +180,11 @@ const UserInfoForm = () => {
               id="first-name"
               name="first-name"
               value={firstName}
-              type="name"
+              type="text"
               placeholder="John"
               autoComplete="first name"
               required
+              onChange={(e) => setFirstName(e.target.value)}
             />
           </FormGrid>
           <FormGrid item xs={12} md={4}>
@@ -149,10 +192,10 @@ const UserInfoForm = () => {
             <OutlinedInput
               id="middle-name"
               name="middle-name"
-              type="middle-name"
+              type="text"
               value={middleName}
               placeholder=""
-              required
+              onChange={(e) => setMiddleName(e.target.value)}
             />
           </FormGrid>
           <FormGrid item xs={12} md={4}>
@@ -163,10 +206,11 @@ const UserInfoForm = () => {
               id="last-name"
               value={lastName}
               name="last-name"
-              type="last-name"
+              type="text"
               placeholder="Snow"
               autoComplete="last name"
               required
+              onChange={(e) => setLastName(e.target.value)}
             />
           </FormGrid>
 
@@ -188,6 +232,7 @@ const UserInfoForm = () => {
               name="email"
               type="email"
               value={personalEmail}
+              onChange={(e) => setPersonalEmail(e.target.value)}
               required
             />
           </FormGrid>
@@ -198,10 +243,10 @@ const UserInfoForm = () => {
             <OutlinedInput
               id="phone"
               name="phone"
-              type="phone"
+              type="text"
               value={phone}
               placeholder="+44 07123456789"
-              autoComplete="+44 07123456789"
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </FormGrid>
@@ -214,7 +259,8 @@ const UserInfoForm = () => {
               id="address"
               name="address"
               value={address}
-              type="address"
+              type="text"
+              onChange={(e) => setAddress(e.target.value)}
               required
             />
           </FormGrid>
@@ -225,15 +271,22 @@ const UserInfoForm = () => {
             <OutlinedInput
               id="zip"
               name="zip"
-              type="zip"
+              type="text"
               value={postcode}
+              onChange={(e) => setPostcode(e.target.value)}
               required
             />
           </FormGrid>
         </Grid>
       </Container>
       <Box sx={{ textAlign: 'center' }}>
-        <Button variant="contained" endIcon={<SendIcon />} size="large">
+        <Button
+          // onClick={updatePrimaryInfo}
+          variant="contained"
+          endIcon={<SendIcon />}
+          onClick={(e) => updatePrimaryInfo(e)}
+          size="large"
+        >
           Update
         </Button>
       </Box>
@@ -246,132 +299,128 @@ const UserInfoForm = () => {
         sx={{
           mt: 4,
           mb: 4,
-          display: 'flex',
-          justifyContent: 'end',
         }}
       >
         {emergencyContact.map((contact, index) => {
           return (
-            <Grid
-              index={index}
-              container
-              spacing={1}
-              sx={{ justifyContent: 'end' }}
-            >
-              <FormGrid item xs={12} md={4}>
-                <FormLabel htmlFor="e-first-name" required>
-                  First name
-                </FormLabel>
-                <OutlinedInput
-                  id="e-first-name"
-                  name="e-first-name"
-                  type="name"
-                  placeholder=""
-                  value={contact.firstName}
-                  required
-                />
-              </FormGrid>
-              <FormGrid item xs={12} md={4}>
-                <FormLabel htmlFor="e-last-name">Last name</FormLabel>
-                <OutlinedInput
-                  id="e-last-name"
-                  name="e-last-name"
-                  type="e-last-name"
-                  value={contact.lastName}
-                  placeholder=""
-                  required
-                />
-              </FormGrid>
-              <FormGrid item xs={12} md={4}>
-                <FormLabel htmlFor="e-title">Title</FormLabel>
-                <Select
-                  displayEmpty
-                  value={contact.title}
-                  onChange={handleEmergencyTitleChange}
-                  input={<OutlinedInput />}
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return <em>Title</em>;
-                    }
-                    return selected;
-                  }}
-                  inputProps={{ 'aria-label': 'Without label' }}
-                >
-                  <MenuItem disabled value="">
-                    <em>Title</em>
-                  </MenuItem>
-                  {titleSelect.map((title) => (
-                    <MenuItem key={title} value={eTitle}>
-                      {title}
+            <Box key={index}>
+              <h4>Contact {index + 1}</h4>
+              <Grid container spacing={1} mt={2}>
+                <FormGrid item xs={12} md={4}>
+                  <FormLabel htmlFor="e-first-name" required>
+                    First name
+                  </FormLabel>
+                  <OutlinedInput
+                    id="e-first-name"
+                    name="e-first-name"
+                    type="name"
+                    placeholder=""
+                    value={contact.firstName}
+                    required
+                  />
+                </FormGrid>
+                <FormGrid item xs={12} md={4}>
+                  <FormLabel htmlFor="e-last-name">Last name</FormLabel>
+                  <OutlinedInput
+                    id="e-last-name"
+                    name="e-last-name"
+                    type="e-last-name"
+                    value={contact.lastName}
+                    placeholder=""
+                    required
+                  />
+                </FormGrid>
+                <FormGrid item xs={12} md={4}>
+                  <FormLabel htmlFor="e-title">Title</FormLabel>
+                  <Select
+                    displayEmpty
+                    value={contact.title}
+                    onChange={handleEmergencyTitleChange}
+                    input={<OutlinedInput />}
+                    renderValue={(selected) => {
+                      if (!selected) {
+                        return <em>Title</em>;
+                      }
+                      return contact.title;
+                    }}
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem disabled value="">
+                      <em>Title</em>
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormGrid>
-              <FormGrid item xs={12} md={4}>
-                <FormLabel htmlFor="relation">Relation</FormLabel>
-                <OutlinedInput
-                  id="relation"
-                  value={contact.relation}
-                  name="relation"
-                  type=""
-                  required
-                />
-              </FormGrid>
-              <FormGrid item xs={12} md={4}>
-                <FormLabel htmlFor="e-email" required>
-                  Email
-                </FormLabel>
-                <OutlinedInput
-                  id="e-email"
-                  name="e-email"
-                  type="email"
-                  value={contact.email}
-                  placeholder="personal@email.com"
-                  required
-                />
-              </FormGrid>
-              <FormGrid item xs={12} md={4}>
-                <FormLabel htmlFor="e-phone" required>
-                  Phone
-                </FormLabel>
-                <OutlinedInput
-                  id="e-phone"
-                  name="e-phone"
-                  type="phone"
-                  value={contact.phone}
-                  placeholder="+44 07123456789"
-                  autoComplete="+44 07123456789"
-                  required
-                />
-              </FormGrid>
+                    {titleSelect.map((title) => (
+                      <MenuItem key={title} value={eTitle}>
+                        {title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormGrid>
+                <FormGrid item xs={12} md={4}>
+                  <FormLabel htmlFor="relation">Relation</FormLabel>
+                  <OutlinedInput
+                    id="relation"
+                    value={contact.relation}
+                    name="relation"
+                    type=""
+                    required
+                  />
+                </FormGrid>
+                <FormGrid item xs={12} md={4}>
+                  <FormLabel htmlFor="e-email" required>
+                    Email
+                  </FormLabel>
+                  <OutlinedInput
+                    id="e-email"
+                    name="e-email"
+                    type="email"
+                    value={contact.email}
+                    placeholder="personal@email.com"
+                    required
+                  />
+                </FormGrid>
+                <FormGrid item xs={12} md={4}>
+                  <FormLabel htmlFor="e-phone" required>
+                    Phone
+                  </FormLabel>
+                  <OutlinedInput
+                    id="e-phone"
+                    name="e-phone"
+                    type="phone"
+                    value={contact.phone}
+                    placeholder="+44 07123456789"
+                    autoComplete="+44 07123456789"
+                    required
+                  />
+                </FormGrid>
 
-              <FormGrid item xs={8}>
-                <FormLabel htmlFor="e-address" required>
-                  Address
-                </FormLabel>
-                <OutlinedInput
-                  id="e-address"
-                  name="e-address"
-                  type="e-address"
-                  value={contact.address}
-                  placeholder=""
-                  required
-                />
-              </FormGrid>
-              <FormGrid item xs={4}>
-                <FormLabel htmlFor="e-zip" required>
-                  Zip / Postal code
-                </FormLabel>
-                <OutlinedInput
-                  id="e-zip"
-                  name="e-zip"
-                  type="e-zip"
-                  value={contact.postcode}
-                  placeholder=""
-                  required
-                />
-              </FormGrid>
-            </Grid>
+                <FormGrid item xs={8}>
+                  <FormLabel htmlFor="e-address" required>
+                    Address
+                  </FormLabel>
+                  <OutlinedInput
+                    id="e-address"
+                    name="e-address"
+                    type="e-address"
+                    value={contact.address}
+                    placeholder=""
+                    required
+                  />
+                </FormGrid>
+                <FormGrid item xs={4}>
+                  <FormLabel htmlFor="e-zip" required>
+                    Zip / Postal code
+                  </FormLabel>
+                  <OutlinedInput
+                    id="e-zip"
+                    name="e-zip"
+                    type="e-zip"
+                    value={contact.postcode}
+                    placeholder=""
+                    required
+                  />
+                </FormGrid>
+              </Grid>
+            </Box>
           );
         })}
       </Container>
