@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 17:03:00
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-07 00:20:15
+ * @LastEditTime: 2024-05-07 01:29:18
  * @FilePath: /csc8019_team_project_frontend/src/components/AbsenceForm.jsx
  */
 
@@ -20,7 +20,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
-import { getLesson, postAbsenceRequest } from '../api/absence';
+import { getLessonTime, postAbsenceRequest } from '../api/bookingandabsence';
 import { getStudentModules } from '../api/modules';
 import PopupBookingAndAbsence from '../components/PopupBookingAndAbsence';
 import { SIGNIN_URL } from '../data/data';
@@ -29,13 +29,12 @@ import { FormGrid } from '../style/formStyle';
 
 const AbsenceForm = () => {
   const [modules, setModules] = useState([]);
-  const [absenceTimeList, setAbsenceTimeList] = useState([]);
   const [selectedModuleName, setSelectedModuleName] = useState('');
+  const [absenceTimeList, setAbsenceTimeList] = useState([]);
+  const [selectedModule, setSelectedModule] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [lessonId, setLessonId] = useState('');
   const [absenceReason, setAbsenceReason] = useState('');
-
-  const [selectedModule, setSelectedModule] = useState('');
 
   const [popupOpen, setPopupOpen] = useState(false);
 
@@ -44,8 +43,7 @@ const AbsenceForm = () => {
       const token = localStorage.getItem('accessToken');
       try {
         if (token) {
-          console.log(selectedModule);
-          const response = await getLesson(selectedModule);
+          const response = await getLessonTime(selectedModule);
           setAbsenceTimeList(response);
         } else {
           window.location.href = SIGNIN_URL;
