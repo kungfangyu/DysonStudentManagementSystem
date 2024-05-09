@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-18 17:03:00
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-07 14:30:06
+ * @LastEditTime: 2024-05-07 14:44:40
  * @FilePath: /csc8019_team_project_frontend/src/components/BookingForm.jsx
  */
 
@@ -67,14 +67,13 @@ const BookingForm = () => {
       if (token) {
         const response = await getMeetingTime(tutorId);
         setMeetingTimeList(response);
-        console.log('🚀 ~ fetchMeetingTime ~ response:', response);
       } else {
         window.location.href = SIGNIN_URL;
       }
     } catch (error) {
       console.error('Error fetching student tutor:', error);
     }
-  }, []);
+  }, [tutorId]);
 
   useEffect(() => {
     fetchTutor();

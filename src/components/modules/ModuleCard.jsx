@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-16 21:37:20
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-06 01:48:39
+ * @LastEditTime: 2024-05-08 20:01:08
  * @FilePath: /csc8019_team_project_frontend/src/components/modules/ModuleCard.jsx
  */
 import { CardActionArea } from '@mui/material';
@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { parseJwt } from '../../helpers/jwt';
 
+//This component is used to display the module card on the Module page
 const ModuleCard = ({ moduleData }) => {
   const token = localStorage.getItem('accessToken');
   const parse = parseJwt(token);

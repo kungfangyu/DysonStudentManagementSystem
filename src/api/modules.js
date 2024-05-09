@@ -2,10 +2,12 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-30 17:48:02
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-06 21:51:48
+ * @LastEditTime: 2024-05-08 20:00:37
  * @FilePath: /csc8019_team_project_frontend/src/api/modules.js
  */
 import service from './axios';
+
+// All of API methods related to modules
 
 export const getStudentModules = async (studentID) => {
   return await service({

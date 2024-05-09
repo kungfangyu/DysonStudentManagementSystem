@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-03-14 20:59:36
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-06 02:07:11
+ * @LastEditTime: 2024-05-08 20:02:05
  * @FilePath: /csc8019_team_project_frontend/src/App.jsx
  */
 
@@ -38,6 +38,7 @@ const App = () => {
     }, 1000); // Set the loading time in milliseconds
   }, []);
 
+  //Setup the routes.
   return (
     <BrowserRouter>
       <AuthProvider>

@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-06 19:07:12
+ * @LastEditTime: 2024-05-08 20:01:37
  * @FilePath: /csc8019_team_project_frontend/src/components/modules/PopupAddCoursework.jsx
  */
 import dayjs from 'dayjs';
@@ -34,6 +34,7 @@ const PopupAddCoursework = ({ open, handlePopupClose, fetchCoursework }) => {
   const [postDate, setPostDate] = useState(dayjs(Date.now()));
   const [percentage, setPercentage] = useState(0);
   const [isPublished, setIsPublished] = useState(false);
+
   //Upload file to the server
   const filepath = `module/${moduleId}/cousework`;
   const handleUpload = async () => {
