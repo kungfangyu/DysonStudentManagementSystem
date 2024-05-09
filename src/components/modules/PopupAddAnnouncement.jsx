@@ -2,7 +2,7 @@
  * @Author: Fangyu Kung
  * @Date: 2024-04-15 16:43:40
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-05-05 20:29:49
+ * @LastEditTime: 2024-05-08 20:02:09
  * @FilePath: /csc8019_team_project_frontend/src/components/modules/PopupAddAnnouncement.jsx
  */
 import dayjs from 'dayjs';
@@ -23,6 +23,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { postModuleAnnouncement } from '../../api/modules';
 import { parseJwt } from '../../helpers/jwt';
 import { FormGrid } from '../../style/formStyle';
+
 const PopupAddAnnouncement = ({
   moduleId,
   open,
@@ -40,7 +41,7 @@ const PopupAddAnnouncement = ({
     handlePopupClose && handlePopupClose();
   };
 
-  // Create announcement
+  // Create announcement function
   const createAnnouncement = useCallback(async () => {
     try {
       const announcementData = {
